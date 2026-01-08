@@ -6,9 +6,9 @@ import { NewsFeedGrid } from "@/components/panels/NewsPanel";
 import { AffectedAssets, AffectedAssetsStatic } from "@/components/panels/AffectedAssets";
 import { SituationTrackerGrid, SituationTrackerStatic } from "@/components/panels/SituationTracker";
 import { GlobalActivityMap, GlobalActivityMapStatic } from "@/components/panels/GlobalActivityMap";
+import EconomicCalendar from "@/components/panels/EconomicCalendar";
 import {
   FedBalanceSheet,
-  EconomicCalendar,
   SectorHeatmap,
   COTData,
   LayoffsTracker,
@@ -119,8 +119,13 @@ export default function Dashboard() {
       <section className="bg-[#111111] py-8">
         <div className="max-w-[1920px] mx-auto px-4">
           <SectionHeader title="ANALYSIS TOOLS" subtitle="Market correlation data" />
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {loading ? <AffectedAssetsStatic /> : <AffectedAssets recentNews={allNews} />}
+          <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+            <div className="min-h-[400px]">
+              {loading ? <AffectedAssetsStatic /> : <AffectedAssets recentNews={allNews} />}
+            </div>
+            <div className="min-h-[400px]">
+              <EconomicCalendar />
+            </div>
           </div>
         </div>
       </section>
@@ -135,7 +140,6 @@ export default function Dashboard() {
           />
           <div className="panel-grid">
             <FedBalanceSheet />
-            <EconomicCalendar />
             <SectorHeatmap />
             <COTData />
             <LayoffsTracker />

@@ -49,16 +49,6 @@ export function FedBalanceSheet() {
   );
 }
 
-export function EconomicCalendar() {
-  return (
-    <PlaceholderPanel
-      title="ECONOMIC CALENDAR"
-      description="High-impact economic events and announcements"
-      icon={<span>📅</span>}
-    />
-  );
-}
-
 export function SectorHeatmap() {
   return (
     <PlaceholderPanel
@@ -124,7 +114,6 @@ export function Phase2PlaceholdersGrid() {
   return (
     <div className="panel-grid">
       <FedBalanceSheet />
-      <EconomicCalendar />
       <SectorHeatmap />
       <COTData />
       <LayoffsTracker />
