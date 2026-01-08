@@ -97,17 +97,22 @@ function extractTag(xml: string, tagName: string): string | null {
   const cdataRegex = new RegExp(`<${tagName}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tagName}>`, "i");
   const cdataMatch = xml.match(cdataRegex);
   if (cdataMatch) {
-    return cdataMatch[1].trim();
+    // Decode HTML entities even from CDATA content
+    return he.decode(cdataMatch[1].trim());
   }
 
   // Handle regular tags
   const regex = new RegExp(`<${tagName}[^>]*>([\\s\\S]*?)</${tagName}>`, "i");
   const match = xml.match(regex);
-  return match ? match[1].trim() : null;
+  if (match) {
+    // Decode HTML entities from regular tag content
+    return he.decode(match[1].trim());
+  }
+  return null;
 }
 
 function cleanTitle(title: string): string {
-  // Remove CDATA wrappers, HTML tags, then decode all HTML entities using 'he' library
+  // Remove CDATA wrappers, HTML tags
   const cleaned = title
     .replace(/<!\[CDATA\[/g, "")
     .replace(/\]\]>/g, "")
@@ -115,7 +120,8 @@ function cleanTitle(title: string): string {
     .trim();
 
   // Use 'he' library for robust HTML entity decoding (handles &#x2019;, &#8217;, &rsquo;, etc.)
-  return he.decode(cleaned);
+  // Double-decode to handle any remaining entities
+  return he.decode(he.decode(cleaned));
 }
 
 function cleanLink(link: string): string {

@@ -36,14 +36,6 @@ const PULSE_SPEEDS: Record<ThreatLevel, string> = {
   critical: "1s",
 };
 
-// Conflict zone labels for specific hotspots
-const CONFLICT_LABELS: Record<string, { text: string; color: string }> = {
-  kyiv: { text: "UKRAINE CONFLICT", color: "#ef4444" },
-  gaza: { text: "GAZA CONFLICT", color: "#ef4444" },
-  taipei: { text: "TAIWAN STRAIT", color: "#f59e0b" },
-  khartoum: { text: "SUDAN CIVIL WAR", color: "#f97316" },
-};
-
 function MapController() {
   const map = useMap();
 
@@ -58,47 +50,37 @@ function MapController() {
   return null;
 }
 
-// Create pulsing marker with glow effect and optional conflict label
-function createPulsingIcon(id: string, name: string, color: string, status: ThreatLevel) {
+// Create pulsing marker with glow effect
+function createPulsingIcon(name: string, color: string, status: ThreatLevel) {
   const isCritical = status === "critical";
   const isHigh = status === "high" || status === "critical";
   const pulseSpeed = PULSE_SPEEDS[status];
-  const conflictLabel = CONFLICT_LABELS[id];
 
   // Double ring for critical status
   const criticalRing = isCritical
-    ? `<div class="marker-pulse-ring" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;border:1px solid ${color};opacity:0;animation:pulse-ring ${pulseSpeed} ease-out infinite 0.5s;"></div>`
-    : '';
-
-  // Conflict zone label box
-  const conflictLabelHtml = conflictLabel
-    ? `<div style="position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:4px;padding:2px 6px;background:${conflictLabel.color}20;border:1px solid ${conflictLabel.color}60;border-radius:2px;white-space:nowrap;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:${conflictLabel.color};letter-spacing:0.5px;">${conflictLabel.text}</span>
-      </div>`
+    ? `<div class="marker-pulse-ring" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;border:1px solid ${color};opacity:0;animation:pulse-ring ${pulseSpeed} ease-out infinite 0.5s;"></div>`
     : '';
 
   return L.divIcon({
     className: 'custom-marker-container',
     html: `
       <div class="hotspot-marker" data-status="${status}">
-        ${conflictLabelHtml}
-
-        <!-- Outer pulse rings -->
-        <div class="marker-pulse-ring" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;border:2px solid ${color};opacity:0;animation:pulse-ring ${pulseSpeed} ease-out infinite;"></div>
+        <!-- Outer pulse ring -->
+        <div class="marker-pulse-ring" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;border:2px solid ${color};opacity:0;animation:pulse-ring ${pulseSpeed} ease-out infinite;"></div>
         ${criticalRing}
 
         <!-- Glow layer -->
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:${color};filter:blur(8px);opacity:0.4;"></div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:${color};filter:blur(6px);opacity:0.4;"></div>
 
         <!-- Inner solid dot -->
-        <div class="marker-dot" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${isHigh ? 12 : 10}px;height:${isHigh ? 12 : 10}px;background:${color};border-radius:50%;box-shadow:0 0 10px ${color}, 0 0 20px ${color}40;border:2px solid rgba(255,255,255,0.3);transition:transform 0.2s ease;"></div>
+        <div class="marker-dot" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${isHigh ? 10 : 8}px;height:${isHigh ? 10 : 8}px;background:${color};border-radius:50%;box-shadow:0 0 8px ${color}, 0 0 16px ${color}40;border:2px solid rgba(255,255,255,0.3);transition:transform 0.2s ease;"></div>
 
         <!-- Label -->
-        <div class="marker-label" style="position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#e5e5e5;text-shadow:0 0 4px #000,0 0 8px #000,0 2px 4px rgba(0,0,0,0.8);white-space:nowrap;letter-spacing:1px;text-transform:uppercase;">${name}</div>
+        <div class="marker-label" style="position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#e5e5e5;text-shadow:0 0 4px #000,0 0 8px #000,0 2px 4px rgba(0,0,0,0.8);white-space:nowrap;letter-spacing:1px;text-transform:uppercase;">${name}</div>
       </div>
     `,
-    iconSize: [80, 70],
-    iconAnchor: [40, 30],
+    iconSize: [80, 60],
+    iconAnchor: [40, 25],
   });
 }
 
@@ -199,7 +181,7 @@ function GridOverlay() {
 
 function HotspotMarker({ hotspot }: { hotspot: HotspotData }) {
   const color = STATUS_COLORS[hotspot.status];
-  const icon = createPulsingIcon(hotspot.id, hotspot.name, color, hotspot.status);
+  const icon = createPulsingIcon(hotspot.name, color, hotspot.status);
 
   return (
     <Marker

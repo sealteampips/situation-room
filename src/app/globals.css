@@ -260,13 +260,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 40, 30, 0.15) 0%,
-    rgba(0, 60, 40, 0.1) 50%,
-    rgba(0, 40, 30, 0.15) 100%
-  );
-  mix-blend-mode: overlay;
+  background: rgba(34, 197, 94, 0.04);
   pointer-events: none;
   z-index: 999;
 }
@@ -322,10 +316,11 @@ body {
   }
 }
 
-/* Leaflet base styles */
+/* Leaflet base styles with night vision tint */
 .leaflet-container {
   background: #080808 !important;
   font-family: 'JetBrains Mono', monospace !important;
+  filter: brightness(0.9) sepia(0.15) hue-rotate(70deg) saturate(0.85);
 }
 
 .leaflet-control-attribution {
@@ -367,10 +362,10 @@ body {
 @keyframes pulse-ring {
   0% {
     transform: translate(-50%, -50%) scale(1);
-    opacity: 0.8;
+    opacity: 0.6;
   }
   100% {
-    transform: translate(-50%, -50%) scale(2.5);
+    transform: translate(-50%, -50%) scale(1.8);
     opacity: 0;
   }
 }

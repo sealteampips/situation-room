@@ -6,7 +6,9 @@ export const RSS_FEEDS: FeedConfig[] = [
   { name: "BBC World", url: "https://feeds.bbci.co.uk/news/world/rss.xml", category: "world" },
   { name: "AP News", url: "https://rsshub.app/apnews/topics/apf-topnews", category: "world" },
   { name: "Al Jazeera", url: "https://www.aljazeera.com/xml/rss/all.xml", category: "world" },
-  { name: "Reuters Middle East", url: "https://feeds.reuters.com/Reuters/worldNews", category: "world" },
+  { name: "BBC Middle East", url: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml", category: "world" },
+  { name: "BBC Asia", url: "https://feeds.bbci.co.uk/news/world/asia/rss.xml", category: "world" },
+  { name: "NPR World", url: "https://feeds.npr.org/1004/rss.xml", category: "world" },
 
   // Technology/AI
   { name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", category: "tech" },
