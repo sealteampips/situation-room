@@ -71,27 +71,40 @@ interface TickerMatch {
 
 function getAffectedTickers(news: NewsItem[]): TickerMatch[] {
   const matches: TickerMatch[] = [];
-  const seenTriggers = new Set<string>();
+  const usedHeadlines = new Set<string>();
+  const usedMappingIndices = new Set<number>();
 
   for (const item of news.slice(0, 50)) {
+    // Skip if this headline was already used
+    if (usedHeadlines.has(item.title)) continue;
+
     const titleLower = item.title.toLowerCase();
 
-    for (const mapping of TICKER_MAPPINGS) {
-      for (const keyword of mapping.keywords) {
-        if (titleLower.includes(keyword.toLowerCase()) && !seenTriggers.has(keyword)) {
-          seenTriggers.add(keyword);
-          matches.push({
-            trigger: keyword.toUpperCase(),
-            tickers: mapping.tickers,
-            matchedHeadline: item.title,
-          });
-          break;
-        }
+    for (let mappingIdx = 0; mappingIdx < TICKER_MAPPINGS.length; mappingIdx++) {
+      // Skip if this mapping category was already matched
+      if (usedMappingIndices.has(mappingIdx)) continue;
+
+      const mapping = TICKER_MAPPINGS[mappingIdx];
+      const matchedKeyword = mapping.keywords.find(keyword =>
+        titleLower.includes(keyword.toLowerCase())
+      );
+
+      if (matchedKeyword) {
+        usedHeadlines.add(item.title);
+        usedMappingIndices.add(mappingIdx);
+        matches.push({
+          trigger: matchedKeyword.toUpperCase(),
+          tickers: mapping.tickers,
+          matchedHeadline: item.title,
+        });
+        break; // Move to next headline
       }
     }
+
+    if (matches.length >= 5) break;
   }
 
-  return matches.slice(0, 5); // Limit to 5 groups
+  return matches;
 }
 
 // Static preview for when there's no news data

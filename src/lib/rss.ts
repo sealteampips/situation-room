@@ -105,18 +105,56 @@ function extractTag(xml: string, tagName: string): string | null {
   return match ? match[1].trim() : null;
 }
 
+function decodeHTMLEntities(text: string): string {
+  // Named entities
+  const namedEntities: Record<string, string> = {
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": '"',
+    "&apos;": "'",
+    "&nbsp;": " ",
+    "&ndash;": "–",
+    "&mdash;": "—",
+    "&lsquo;": "'",
+    "&rsquo;": "'",
+    "&ldquo;": '"',
+    "&rdquo;": '"',
+    "&hellip;": "…",
+    "&copy;": "©",
+    "&reg;": "®",
+    "&trade;": "™",
+    "&euro;": "€",
+    "&pound;": "£",
+    "&yen;": "¥",
+    "&cent;": "¢",
+  };
+
+  let result = text;
+
+  // Replace named entities
+  for (const [entity, char] of Object.entries(namedEntities)) {
+    result = result.replace(new RegExp(entity, "gi"), char);
+  }
+
+  // Decode numeric entities (decimal: &#8217; and hex: &#x2019;)
+  result = result.replace(/&#(\d+);/g, (_, dec) => {
+    return String.fromCharCode(parseInt(dec, 10));
+  });
+  result = result.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => {
+    return String.fromCharCode(parseInt(hex, 16));
+  });
+
+  return result;
+}
+
 function cleanTitle(title: string): string {
-  return title
-    .replace(/<!\[CDATA\[/g, "")
-    .replace(/\]\]>/g, "")
-    .replace(/<[^>]+>/g, "")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, " ")
-    .trim();
+  return decodeHTMLEntities(
+    title
+      .replace(/<!\[CDATA\[/g, "")
+      .replace(/\]\]>/g, "")
+      .replace(/<[^>]+>/g, "")
+  ).trim();
 }
 
 function cleanLink(link: string): string {

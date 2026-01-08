@@ -6,8 +6,8 @@ import { NewsFeedGrid } from "@/components/panels/NewsPanel";
 import { MoonPhasePanel } from "@/components/panels/MoonPhase";
 import { AffectedAssets, AffectedAssetsStatic } from "@/components/panels/AffectedAssets";
 import { SituationTrackerGrid, SituationTrackerStatic } from "@/components/panels/SituationTracker";
+import { GlobalActivityMap, GlobalActivityMapStatic } from "@/components/panels/GlobalActivityMap";
 import {
-  GlobalActivityMap,
   FedBalanceSheet,
   EconomicCalendar,
   SectorHeatmap,
@@ -17,7 +17,7 @@ import {
   AIArmsRace,
   CentralBankWatch,
 } from "@/components/panels/PlaceholderPanel";
-import { NewsItem, NewsCategory } from "@/types";
+import type { NewsItem, NewsCategory } from "@/types";
 import { REFRESH_INTERVAL } from "@/lib/constants";
 
 type NewsData = Record<NewsCategory, NewsItem[]>;
@@ -94,6 +94,11 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Section: Global Activity Map - TOP OF PAGE */}
+        <section>
+          {loading ? <GlobalActivityMapStatic /> : <GlobalActivityMap allNews={allNews} />}
+        </section>
+
         {/* Section: News Feeds */}
         <section>
           <SectionHeader title="INTELLIGENCE FEEDS" subtitle="Real-time news aggregation" />
@@ -112,7 +117,6 @@ export default function Dashboard() {
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {loading ? <AffectedAssetsStatic /> : <AffectedAssets recentNews={allNews} />}
             <MoonPhasePanel />
-            <GlobalActivityMap />
           </div>
         </section>
 
@@ -136,15 +140,15 @@ export default function Dashboard() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-[#1f1f1f] pt-6 mt-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-mono">
+        <footer className="border-t border-[#262626] pt-6 mt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400 font-mono">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500" />
               <span>SYSTEM OPERATIONAL</span>
             </div>
             <div className="text-center sm:text-right">
-              <div>SITUATION MONITOR v1.0.0</div>
-              <div className="text-gray-600">
+              <div>SITUATION MONITOR v1.1.0</div>
+              <div className="text-gray-500">
                 Data refreshes every 5 minutes | For informational purposes only
               </div>
             </div>
@@ -176,10 +180,10 @@ function SectionHeader({ title, subtitle, badge }: SectionHeaderProps) {
           )}
         </div>
         {subtitle && (
-          <p className="text-xs text-gray-500 font-mono mt-0.5">{subtitle}</p>
+          <p className="text-xs text-gray-400 font-mono mt-0.5">{subtitle}</p>
         )}
       </div>
-      <div className="flex-1 h-px bg-gradient-to-r from-[#1f1f1f] to-transparent" />
+      <div className="flex-1 h-px bg-gradient-to-r from-[#262626] to-transparent" />
     </div>
   );
 }

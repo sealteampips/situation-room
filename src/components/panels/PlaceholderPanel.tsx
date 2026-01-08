@@ -39,16 +39,6 @@ export function PlaceholderPanel({
 }
 
 // Pre-configured placeholder panels for Phase 2 features
-export function GlobalActivityMap() {
-  return (
-    <PlaceholderPanel
-      title="GLOBAL ACTIVITY MONITOR"
-      description="Interactive world map showing real-time geopolitical events and hotspots"
-      icon={<span>🌍</span>}
-    />
-  );
-}
-
 export function FedBalanceSheet() {
   return (
     <PlaceholderPanel
@@ -133,7 +123,6 @@ export function CentralBankWatch() {
 export function Phase2PlaceholdersGrid() {
   return (
     <div className="panel-grid">
-      <GlobalActivityMap />
       <FedBalanceSheet />
       <EconomicCalendar />
       <SectorHeatmap />
