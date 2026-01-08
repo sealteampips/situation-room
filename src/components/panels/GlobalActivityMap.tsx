@@ -67,7 +67,7 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
 
   return (
     <div className="relative">
-      {/* Map Header with Threat Legend */}
+      {/* Map Header */}
       <div className="flex items-center justify-between mb-3 gap-4">
         {/* Left: Title */}
         <div className="flex items-center gap-2 shrink-0">
@@ -77,8 +77,8 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
           </h2>
         </div>
 
-        {/* Center: Threat Legend */}
-        <div className="flex items-center gap-3 px-3 py-1 bg-[#0a0a0a]/80 border border-amber-500/20 rounded">
+        {/* Center: Threat Legend - Hidden on mobile */}
+        <div className="hidden md:flex items-center gap-3 px-3 py-1 bg-[#0a0a0a]/80 border border-amber-500/20 rounded">
           <span className="text-[9px] font-mono text-amber-500/80 uppercase tracking-wider font-semibold">
             Threat
           </span>
@@ -90,7 +90,8 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
 
         {/* Right: Monitor Count */}
         <div className="text-[10px] font-mono text-gray-500 shrink-0">
-          {hotspotsWithData.length} ACTIVE MONITORS
+          <span className="hidden sm:inline">{hotspotsWithData.length} ACTIVE MONITORS</span>
+          <span className="sm:hidden">{hotspotsWithData.length} MONITORS</span>
         </div>
       </div>
 
@@ -114,6 +115,19 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
               <span className="text-amber-500/60">◉</span> LIVE FEED
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile Threat Legend - Below map */}
+      <div className="flex md:hidden justify-center mt-3">
+        <div className="flex items-center gap-3 px-3 py-1.5 bg-[#0a0a0a]/80 border border-amber-500/20 rounded">
+          <span className="text-[9px] font-mono text-amber-500/80 uppercase tracking-wider font-semibold">
+            Threat
+          </span>
+          <LegendItem color="#22c55e" label="Low" />
+          <LegendItem color="#f59e0b" label="Elevated" />
+          <LegendItem color="#f97316" label="High" />
+          <LegendItem color="#ef4444" label="Critical" />
         </div>
       </div>
     </div>
