@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0a0a0a"/>
+  <rect x="32" y="32" width="448" height="448" rx="32" fill="#111111" stroke="#f59e0b" stroke-width="4"/>
+
+  <!-- Radar circle -->
+  <circle cx="256" cy="200" r="80" fill="none" stroke="#22c55e" stroke-width="6"/>
+  <circle cx="256" cy="200" r="50" fill="none" stroke="#22c55e" stroke-width="3" opacity="0.5"/>
+  <circle cx="256" cy="200" r="20" fill="#22c55e"/>
+
+  <!-- Radar sweep line -->
+  <line x1="256" y1="200" x2="336" y2="160" stroke="#22c55e" stroke-width="4" opacity="0.7"/>
+
+  <!-- Signal waves -->
+  <path d="M160 320 L256 380 L352 320" fill="none" stroke="#f59e0b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M120 360 L256 430 L392 360" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+  <path d="M80 400 L256 480 L432 400" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+
+  <!-- Alert indicator -->
+  <rect x="180" y="100" width="152" height="12" rx="6" fill="#ef4444"/>
+
+  <!-- Dots representing data points -->
+  <circle cx="200" cy="180" r="8" fill="#ef4444"/>
+  <circle cx="300" cy="160" r="6" fill="#eab308"/>
+  <circle cx="280" cy="220" r="6" fill="#22c55e"/>
+</svg>
