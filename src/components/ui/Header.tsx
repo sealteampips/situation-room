@@ -75,18 +75,26 @@ export function Header({ onRefresh, lastUpdated, isRefreshing = false }: HeaderP
 
           {/* Status Section */}
           <div className="flex items-center gap-4 md:gap-6">
-            {/* Moon Phase - Minimal Display */}
+            {/* Moon Phase - Compact on mobile, full on desktop */}
             {mounted && moonData && (
-              <div className="hidden md:flex items-center gap-2 text-gray-500">
-                <span className="text-sm">{getMoonEmoji(moonData.phase)}</span>
-                <span className="text-xs font-mono">
-                  {moonData.illumination}%
-                </span>
-                <span className="text-gray-600">|</span>
-                <span className="text-xs font-mono text-gray-500">
-                  {getNextSignificantPhase(moonData).label}: {formatPhaseDate(getNextSignificantPhase(moonData).date)}
-                </span>
-              </div>
+              <>
+                {/* Mobile: just emoji + % */}
+                <div className="flex md:hidden items-center gap-1 text-gray-500">
+                  <span className="text-sm">{getMoonEmoji(moonData.phase)}</span>
+                  <span className="text-xs font-mono">{moonData.illumination}%</span>
+                </div>
+                {/* Desktop: full display with next phase */}
+                <div className="hidden md:flex items-center gap-2 text-gray-500">
+                  <span className="text-sm">{getMoonEmoji(moonData.phase)}</span>
+                  <span className="text-xs font-mono">
+                    {moonData.illumination}%
+                  </span>
+                  <span className="text-gray-600">|</span>
+                  <span className="text-xs font-mono text-gray-500">
+                    {getNextSignificantPhase(moonData).label}: {formatPhaseDate(getNextSignificantPhase(moonData).date)}
+                  </span>
+                </div>
+              </>
             )}
 
             {/* System Time */}

@@ -29,6 +29,12 @@ const SOURCE_CATEGORIES: Record<string, SourceCategory> = {
   "Politico": "legacy",
   "Star Tribune": "legacy",
   "MPR News": "legacy",
+  "WCCO Minnesota": "legacy",
+  // Regional/Specialty (Blue)
+  "Focus Taiwan": "legacy",
+  "Taipei Times": "legacy",
+  "SCMP Asia": "legacy",
+  "RFE Iran": "legacy",
 
   // Financial (Green)
   "MarketWatch": "financial",

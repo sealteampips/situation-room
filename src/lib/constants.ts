@@ -12,9 +12,16 @@ export const RSS_FEEDS: FeedConfig[] = [
   { name: "Fox News World", url: "https://moxie.foxnews.com/google-publisher/world.xml", category: "world" },
   { name: "CNN World", url: "http://rss.cnn.com/rss/cnn_world.rss", category: "world" },
   { name: "CBS News World", url: "https://www.cbsnews.com/latest/rss/world", category: "world" },
+  // Taiwan/Asia Regional
+  { name: "Focus Taiwan", url: "https://focustaiwan.tw/rss", category: "world" },
+  { name: "Taipei Times", url: "https://www.taipeitimes.com/xml/index.rss", category: "world" },
+  { name: "SCMP Asia", url: "https://www.scmp.com/rss/91/feed", category: "world" },
+  // Iran/Middle East Regional
+  { name: "RFE Iran", url: "https://www.rferl.org/api/zrqiteuuir", category: "world" },
   // Minnesota Local
   { name: "Star Tribune", url: "https://www.startribune.com/local/index.rss", category: "world" },
   { name: "MPR News", url: "https://www.mprnews.org/rss/news", category: "world" },
+  { name: "WCCO Minnesota", url: "https://www.cbsnews.com/minnesota/latest/rss/", category: "world" },
 
   // Technology/AI
   { name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", category: "tech" },
@@ -106,15 +113,13 @@ export const SITUATION_TRACKERS: Omit<SituationStatus, "headlines" | "lastUpdate
     id: "taiwan",
     name: "Taiwan Strait",
     status: "elevated",
-    // Expanded keywords - single words for better matching
-    keywords: ["taiwan", "taipei", "tsmc", "taiwanese", "formosa", "dpp", "kmt", "lai ching"],
+    keywords: ["taiwan", "taipei", "tsmc", "taiwanese", "cross-strait", "taiwan strait", "pla", "chinese military", "south china sea", "dpp", "lai ching-te", "formosa", "kmt"],
   },
   {
     id: "iran",
     name: "Iran",
     status: "high",
-    // Expanded keywords - single words for better matching
-    keywords: ["iran", "iranian", "tehran", "irgc", "khamenei", "hormuz", "hezbollah", "houthi", "persian gulf", "pezeshkian"],
+    keywords: ["iran", "iranian", "tehran", "irgc", "khamenei", "hormuz", "strait of hormuz", "hezbollah", "houthi", "persian gulf", "pezeshkian", "sanctions", "nuclear", "proxy"],
   },
   {
     id: "us-domestic",
