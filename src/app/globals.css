@@ -316,11 +316,15 @@ body {
   }
 }
 
-/* Leaflet base styles with night vision tint */
+/* Leaflet base styles */
 .leaflet-container {
   background: #080808 !important;
   font-family: 'JetBrains Mono', monospace !important;
-  filter: brightness(0.9) sepia(0.15) hue-rotate(70deg) saturate(0.85);
+}
+
+/* Apply night vision filter ONLY to tile layer, not markers */
+.leaflet-tile-pane {
+  filter: brightness(0.85) sepia(0.2) hue-rotate(70deg) saturate(0.8);
 }
 
 .leaflet-control-attribution {

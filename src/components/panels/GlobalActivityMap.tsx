@@ -87,26 +87,25 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
       <div className="relative">
         <MapComponent hotspots={hotspotsWithData} />
 
-        {/* Classification Badge - Top Left */}
-        <div className="absolute top-3 left-14 z-[1000]">
+        {/* Top Bar: Classification + Legend (horizontal) */}
+        <div className="absolute top-3 left-14 right-3 z-[1000] flex items-center justify-between">
+          {/* Classification Badge */}
           <div className="bg-[#0a0a0a]/95 border border-amber-500/30 rounded px-3 py-1.5 backdrop-blur-sm">
             <span className="text-[10px] font-mono text-gray-400 tracking-wider">
               CLASSIFICATION: <span className="text-green-500 font-semibold">OSINT</span>
             </span>
           </div>
-        </div>
 
-        {/* Legend - Top Right */}
-        <div className="absolute top-3 right-3 z-[1000]">
-          <div className="bg-[#0a0a0a]/95 border border-amber-500/30 rounded px-3 py-2.5 backdrop-blur-sm">
-            <div className="text-[9px] font-mono text-amber-500/80 mb-2.5 uppercase tracking-[0.2em] font-semibold">
-              Threat Level
-            </div>
-            <div className="flex flex-col gap-2">
-              <LegendItem color="#22c55e" label="Low" count={threatCounts.low} speed="3s" />
-              <LegendItem color="#f59e0b" label="Elevated" count={threatCounts.elevated} speed="2s" />
-              <LegendItem color="#f97316" label="High" count={threatCounts.high} speed="1.5s" />
-              <LegendItem color="#ef4444" label="Critical" count={threatCounts.critical} speed="1s" />
+          {/* Legend - Horizontal */}
+          <div className="bg-[#0a0a0a]/95 border border-amber-500/30 rounded px-3 py-1.5 backdrop-blur-sm">
+            <div className="flex items-center gap-4">
+              <span className="text-[9px] font-mono text-amber-500/80 uppercase tracking-wider font-semibold">
+                Threat
+              </span>
+              <LegendItem color="#22c55e" label="Low" />
+              <LegendItem color="#f59e0b" label="Elevated" />
+              <LegendItem color="#f97316" label="High" />
+              <LegendItem color="#ef4444" label="Critical" />
             </div>
           </div>
         </div>
@@ -127,40 +126,19 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
 interface LegendItemProps {
   color: string;
   label: string;
-  count: number;
-  speed: string;
 }
 
-function LegendItem({ color, label, count, speed }: LegendItemProps) {
+function LegendItem({ color, label }: LegendItemProps) {
   return (
-    <div className="flex items-center gap-2.5">
-      {/* Animated pulse dot */}
-      <div className="relative w-3 h-3">
-        <div
-          className="absolute inset-0 rounded-full opacity-0"
-          style={{
-            backgroundColor: color,
-            animation: `legend-pulse ${speed} ease-out infinite`,
-          }}
-        />
-        <div
-          className="absolute inset-[3px] rounded-full"
-          style={{
-            backgroundColor: color,
-            boxShadow: `0 0 6px ${color}`,
-          }}
-        />
-      </div>
-      <span className="text-[11px] font-mono text-gray-300 w-14">{label}</span>
-      <span
-        className="text-[10px] font-mono px-1.5 py-0.5 rounded"
+    <div className="flex items-center gap-1.5">
+      <div
+        className="w-2 h-2 rounded-full"
         style={{
-          backgroundColor: count > 0 ? `${color}20` : 'transparent',
-          color: count > 0 ? color : '#4b5563',
+          backgroundColor: color,
+          boxShadow: `0 0 4px ${color}`,
         }}
-      >
-        {count}
-      </span>
+      />
+      <span className="text-[10px] font-mono text-gray-300">{label}</span>
     </div>
   );
 }

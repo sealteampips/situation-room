@@ -26,7 +26,7 @@ export function SituationTrackerPanel({ situation, allNews }: SituationTrackerPa
         <div className="space-y-2">
           {relevantNews.length === 0 ? (
             <div className="text-gray-500 text-sm font-mono py-2">
-              No recent headlines
+              Monitoring — no recent activity
             </div>
           ) : (
             relevantNews.map((item) => (

@@ -1,5 +1,61 @@
 import { NewsItem, NewsCategory, FeedConfig } from "@/types";
-import he from "he";
+
+// Robust HTML entity decoder - handles all common entity types
+function decodeAllEntities(text: string): string {
+  if (!text) return '';
+
+  let decoded = text;
+
+  // First pass: decode HTML numeric entities (&#x2019; &#8217; etc)
+  decoded = decoded.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) =>
+    String.fromCharCode(parseInt(hex, 16))
+  );
+  decoded = decoded.replace(/&#(\d+);/g, (_, dec) =>
+    String.fromCharCode(parseInt(dec, 10))
+  );
+
+  // Second pass: decode named entities
+  const entities: Record<string, string> = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&apos;': "'",
+    '&nbsp;': ' ',
+    '&ndash;': '\u2013',
+    '&mdash;': '\u2014',
+    '&lsquo;': '\u2018',
+    '&rsquo;': '\u2019',
+    '&ldquo;': '\u201C',
+    '&rdquo;': '\u201D',
+    '&hellip;': '\u2026',
+    '&trade;': '\u2122',
+    '&copy;': '\u00A9',
+    '&reg;': '\u00AE',
+    '&deg;': '\u00B0',
+    '&plusmn;': '\u00B1',
+    '&times;': '\u00D7',
+    '&divide;': '\u00F7',
+    '&cent;': '\u00A2',
+    '&pound;': '\u00A3',
+    '&euro;': '\u20AC',
+    '&yen;': '\u00A5',
+  };
+
+  for (const [entity, char] of Object.entries(entities)) {
+    decoded = decoded.split(entity).join(char);
+  }
+
+  // Third pass: run again to catch double-encoded entities
+  decoded = decoded.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) =>
+    String.fromCharCode(parseInt(hex, 16))
+  );
+  decoded = decoded.replace(/&#(\d+);/g, (_, dec) =>
+    String.fromCharCode(parseInt(dec, 10))
+  );
+
+  return decoded;
+}
 
 interface RSSItem {
   title?: string;
@@ -97,31 +153,28 @@ function extractTag(xml: string, tagName: string): string | null {
   const cdataRegex = new RegExp(`<${tagName}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tagName}>`, "i");
   const cdataMatch = xml.match(cdataRegex);
   if (cdataMatch) {
-    // Decode HTML entities even from CDATA content
-    return he.decode(cdataMatch[1].trim());
+    return cdataMatch[1].trim();
   }
 
   // Handle regular tags
   const regex = new RegExp(`<${tagName}[^>]*>([\\s\\S]*?)</${tagName}>`, "i");
   const match = xml.match(regex);
   if (match) {
-    // Decode HTML entities from regular tag content
-    return he.decode(match[1].trim());
+    return match[1].trim();
   }
   return null;
 }
 
 function cleanTitle(title: string): string {
   // Remove CDATA wrappers, HTML tags
-  const cleaned = title
+  let cleaned = title
     .replace(/<!\[CDATA\[/g, "")
     .replace(/\]\]>/g, "")
     .replace(/<[^>]+>/g, "")
     .trim();
 
-  // Use 'he' library for robust HTML entity decoding (handles &#x2019;, &#8217;, &rsquo;, etc.)
-  // Double-decode to handle any remaining entities
-  return he.decode(he.decode(cleaned));
+  // Decode all HTML entities using our robust decoder
+  return decodeAllEntities(cleaned);
 }
 
 function cleanLink(link: string): string {
