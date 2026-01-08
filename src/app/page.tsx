@@ -76,50 +76,58 @@ export default function Dashboard() {
   const allNews = Object.values(news).flat();
 
   return (
-    <div className="min-h-screen bg-background grid-bg scanlines">
+    <div className="min-h-screen bg-[#0a0a0a] grid-bg scanlines">
       <Header
         onRefresh={handleRefresh}
         lastUpdated={lastUpdated || undefined}
         isRefreshing={isRefreshing}
       />
 
-      <main className="max-w-[1920px] mx-auto px-4 py-6 space-y-8">
-        {/* Error Banner */}
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3">
-            <div className="flex items-center gap-2">
-              <span className="text-red-400 text-sm font-mono">{error}</span>
-            </div>
+      {/* Error Banner */}
+      {error && (
+        <div className="bg-red-500/10 border-b border-red-500/30 px-4 py-3">
+          <div className="max-w-[1920px] mx-auto">
+            <span className="text-red-400 text-sm font-mono">{error}</span>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Section: Global Activity Map - TOP OF PAGE */}
-        <section>
+      {/* Section: Global Activity Map - Dark background */}
+      <section className="bg-[#0a0a0a] py-6">
+        <div className="max-w-[1920px] mx-auto px-4">
           {loading ? <GlobalActivityMapStatic /> : <GlobalActivityMap allNews={allNews} />}
-        </section>
+        </div>
+      </section>
 
-        {/* Section: Situation Trackers - ABOVE Intelligence Feeds */}
-        <section>
+      {/* Section: Situation Trackers - Light background */}
+      <section className="bg-[#111111] py-8">
+        <div className="max-w-[1920px] mx-auto px-4">
           <SectionHeader title="SITUATION TRACKERS" subtitle="Monitoring key global situations" />
           {loading ? <SituationTrackerStatic /> : <SituationTrackerGrid allNews={allNews} />}
-        </section>
+        </div>
+      </section>
 
-        {/* Section: News Feeds */}
-        <section>
+      {/* Section: News Feeds - Dark background */}
+      <section className="bg-[#0a0a0a] py-8">
+        <div className="max-w-[1920px] mx-auto px-4">
           <SectionHeader title="INTELLIGENCE FEEDS" subtitle="Real-time news aggregation" />
           <NewsFeedGrid news={news} loading={loading} />
-        </section>
+        </div>
+      </section>
 
-        {/* Section: Analysis Tools */}
-        <section>
+      {/* Section: Analysis Tools - Light background */}
+      <section className="bg-[#111111] py-8">
+        <div className="max-w-[1920px] mx-auto px-4">
           <SectionHeader title="ANALYSIS TOOLS" subtitle="Market correlation data" />
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {loading ? <AffectedAssetsStatic /> : <AffectedAssets recentNews={allNews} />}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section: Phase 2 Modules */}
-        <section>
+      {/* Section: Phase 2 Modules - Dark background */}
+      <section className="bg-[#0a0a0a] py-8">
+        <div className="max-w-[1920px] mx-auto px-4">
           <SectionHeader
             title="UPCOMING MODULES"
             subtitle="Additional features in development"
@@ -135,10 +143,12 @@ export default function Dashboard() {
             <AIArmsRace />
             <CentralBankWatch />
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="border-t border-[#262626] pt-6 mt-8">
+      {/* Footer */}
+      <footer className="bg-[#0a0a0a] border-t border-[#262626] py-6">
+        <div className="max-w-[1920px] mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400 font-mono">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500" />
@@ -151,8 +161,8 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </footer>
-      </main>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -165,23 +175,21 @@ interface SectionHeaderProps {
 
 function SectionHeader({ title, subtitle, badge }: SectionHeaderProps) {
   return (
-    <div className="flex items-center gap-4 mb-4">
-      <div>
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm font-bold tracking-widest text-amber-500 font-mono">
-            {title}
-          </h2>
-          {badge && (
-            <span className="px-2 py-0.5 text-xs font-mono bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded">
-              {badge}
-            </span>
-          )}
-        </div>
-        {subtitle && (
-          <p className="text-xs text-gray-400 font-mono mt-0.5">{subtitle}</p>
+    <div className="mb-6">
+      <div className="flex items-center gap-3">
+        <h2 className="text-xl md:text-2xl font-bold tracking-wide text-gray-100 font-mono">
+          {title}
+        </h2>
+        {badge && (
+          <span className="px-2 py-0.5 text-xs font-mono bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded">
+            {badge}
+          </span>
         )}
       </div>
-      <div className="flex-1 h-px bg-gradient-to-r from-[#262626] to-transparent" />
+      {subtitle && (
+        <p className="text-sm text-gray-500 font-mono mt-1">{subtitle}</p>
+      )}
+      <div className="mt-3 h-px bg-gradient-to-r from-[#333333] via-[#262626] to-transparent" />
     </div>
   );
 }
