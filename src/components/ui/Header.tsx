@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getMoonPhase, getMoonEmoji, formatPhaseDate } from "@/lib/moon";
+import type { MoonPhaseData } from "@/types";
 
 interface HeaderProps {
   onRefresh?: () => void;
@@ -11,9 +13,12 @@ interface HeaderProps {
 export function Header({ onRefresh, lastUpdated, isRefreshing = false }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState<string>("");
   const [mounted, setMounted] = useState(false);
+  const [moonData, setMoonData] = useState<MoonPhaseData | null>(null);
 
   useEffect(() => {
     setMounted(true);
+    setMoonData(getMoonPhase());
+
     const updateTime = () => {
       const now = new Date();
       setCurrentTime(
@@ -30,6 +35,18 @@ export function Header({ onRefresh, lastUpdated, isRefreshing = false }: HeaderP
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Determine closest significant phase (Full or New Moon)
+  const getNextSignificantPhase = (data: MoonPhaseData) => {
+    const now = new Date();
+    const fullMoonDiff = data.nextPhases.fullMoon.getTime() - now.getTime();
+    const newMoonDiff = data.nextPhases.newMoon.getTime() - now.getTime();
+
+    if (fullMoonDiff < newMoonDiff) {
+      return { label: "Full", date: data.nextPhases.fullMoon };
+    }
+    return { label: "New", date: data.nextPhases.newMoon };
+  };
 
   const formatLastUpdated = (date: Date) => {
     return date.toLocaleTimeString("en-US", {
@@ -58,6 +75,20 @@ export function Header({ onRefresh, lastUpdated, isRefreshing = false }: HeaderP
 
           {/* Status Section */}
           <div className="flex items-center gap-4 md:gap-6">
+            {/* Moon Phase - Minimal Display */}
+            {mounted && moonData && (
+              <div className="hidden md:flex items-center gap-2 text-gray-500">
+                <span className="text-sm">{getMoonEmoji(moonData.phase)}</span>
+                <span className="text-xs font-mono">
+                  {moonData.illumination}%
+                </span>
+                <span className="text-gray-600">|</span>
+                <span className="text-xs font-mono text-gray-500">
+                  {getNextSignificantPhase(moonData).label}: {formatPhaseDate(getNextSignificantPhase(moonData).date)}
+                </span>
+              </div>
+            )}
+
             {/* System Time */}
             {mounted && (
               <div className="hidden sm:flex items-center gap-2">

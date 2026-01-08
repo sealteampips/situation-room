@@ -126,6 +126,11 @@ export default function MapClient({ hotspots }: MapClientProps) {
     hotspotCoords[h.id] = [h.lat, h.lng];
   });
 
+  // Mobile: center on US, Desktop: center on Europe/Middle East
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  const defaultCenter: [number, number] = isMobile ? [39, -98] : [25, 20];
+  const defaultZoom = isMobile ? 3 : 2;
+
   return (
     <div className="map-wrapper">
       {/* Scanline overlay */}
@@ -136,8 +141,8 @@ export default function MapClient({ hotspots }: MapClientProps) {
 
       <div className="map-container">
         <MapContainer
-          center={[25, 20]}
-          zoom={2}
+          center={defaultCenter}
+          zoom={defaultZoom}
           minZoom={2}
           maxZoom={8}
           style={{ height: "100%", width: "100%" }}

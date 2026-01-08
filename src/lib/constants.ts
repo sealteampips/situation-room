@@ -9,6 +9,12 @@ export const RSS_FEEDS: FeedConfig[] = [
   { name: "BBC Middle East", url: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml", category: "world" },
   { name: "BBC Asia", url: "https://feeds.bbci.co.uk/news/world/asia/rss.xml", category: "world" },
   { name: "NPR World", url: "https://feeds.npr.org/1004/rss.xml", category: "world" },
+  { name: "Fox News World", url: "https://moxie.foxnews.com/google-publisher/world.xml", category: "world" },
+  { name: "CNN World", url: "http://rss.cnn.com/rss/cnn_world.rss", category: "world" },
+  { name: "CBS News World", url: "https://www.cbsnews.com/latest/rss/world", category: "world" },
+  // Minnesota Local
+  { name: "Star Tribune", url: "https://www.startribune.com/local/index.rss", category: "world" },
+  { name: "MPR News", url: "https://www.mprnews.org/rss/news", category: "world" },
 
   // Technology/AI
   { name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", category: "tech" },
@@ -31,6 +37,9 @@ export const RSS_FEEDS: FeedConfig[] = [
   { name: "DOJ News", url: "https://www.justice.gov/feeds/opa/justice-news.xml", category: "government" },
   { name: "Treasury", url: "https://home.treasury.gov/system/files/126/treasury_rss.xml", category: "government" },
   { name: "GAO Reports", url: "https://www.gao.gov/rss/reports.xml", category: "government" },
+  { name: "Fox News Politics", url: "https://moxie.foxnews.com/google-publisher/politics.xml", category: "government" },
+  { name: "CNN Politics", url: "http://rss.cnn.com/rss/cnn_allpolitics.rss", category: "government" },
+  { name: "Politico", url: "https://www.politico.com/rss/politicopicks.xml", category: "government" },
 ];
 
 export const TICKER_MAPPINGS: TickerMapping[] = [
@@ -117,7 +126,7 @@ export const SITUATION_TRACKERS: Omit<SituationStatus, "headlines" | "lastUpdate
     id: "minnesota",
     name: "Minnesota",
     status: "low",
-    keywords: ["minnesota", "minneapolis", "twin cities", "walz", "st paul", "hennepin"],
+    keywords: ["minnesota", "minneapolis", "twin cities", "walz", "st paul", "hennepin", "ramsey county", "duluth", "rochester mn", "bloomington mn", "eden prairie", "maple grove"],
   },
 ];
 

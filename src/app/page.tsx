@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Header } from "@/components/ui/Header";
 import { NewsFeedGrid } from "@/components/panels/NewsPanel";
-import { MoonPhasePanel } from "@/components/panels/MoonPhase";
 import { AffectedAssets, AffectedAssetsStatic } from "@/components/panels/AffectedAssets";
 import { SituationTrackerGrid, SituationTrackerStatic } from "@/components/panels/SituationTracker";
 import { GlobalActivityMap, GlobalActivityMapStatic } from "@/components/panels/GlobalActivityMap";
@@ -99,24 +98,23 @@ export default function Dashboard() {
           {loading ? <GlobalActivityMapStatic /> : <GlobalActivityMap allNews={allNews} />}
         </section>
 
+        {/* Section: Situation Trackers - ABOVE Intelligence Feeds */}
+        <section>
+          <SectionHeader title="SITUATION TRACKERS" subtitle="Monitoring key global situations" />
+          {loading ? <SituationTrackerStatic /> : <SituationTrackerGrid allNews={allNews} />}
+        </section>
+
         {/* Section: News Feeds */}
         <section>
           <SectionHeader title="INTELLIGENCE FEEDS" subtitle="Real-time news aggregation" />
           <NewsFeedGrid news={news} loading={loading} />
         </section>
 
-        {/* Section: Situation Trackers */}
-        <section>
-          <SectionHeader title="SITUATION TRACKERS" subtitle="Monitoring key global situations" />
-          {loading ? <SituationTrackerStatic /> : <SituationTrackerGrid allNews={allNews} />}
-        </section>
-
         {/* Section: Analysis Tools */}
         <section>
-          <SectionHeader title="ANALYSIS TOOLS" subtitle="Market correlation and lunar data" />
+          <SectionHeader title="ANALYSIS TOOLS" subtitle="Market correlation data" />
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {loading ? <AffectedAssetsStatic /> : <AffectedAssets recentNews={allNews} />}
-            <MoonPhasePanel />
           </div>
         </section>
 

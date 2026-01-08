@@ -21,6 +21,14 @@ const SOURCE_CATEGORIES: Record<string, SourceCategory> = {
   "BBC Middle East": "legacy",
   "BBC Asia": "legacy",
   "NPR World": "legacy",
+  "Fox News World": "legacy",
+  "Fox News Politics": "legacy",
+  "CNN World": "legacy",
+  "CNN Politics": "legacy",
+  "CBS News World": "legacy",
+  "Politico": "legacy",
+  "Star Tribune": "legacy",
+  "MPR News": "legacy",
 
   // Financial (Green)
   "MarketWatch": "financial",
@@ -59,29 +67,42 @@ function getSourceColor(source: string): string {
   return category ? SOURCE_COLORS[category] : "text-amber-500";
 }
 
-// High impact keywords for breaking/critical news
+// High impact keywords for breaking/critical news - narrowed to avoid false positives
 const HIGH_IMPACT_KEYWORDS = [
-  // War/Conflict
-  "war", "invasion", "attack", "strike", "bomb", "missile",
-  "casualties", "troops deployed", "military action", "airstrike",
-  // Crisis/Emergency
-  "crisis", "emergency", "breaking", "urgent", "alert",
-  "martial law", "state of emergency", "evacuate",
+  // Military actions (specific phrases)
+  "invaded", "invade", "invasion",
+  "airstrike", "airstrikes", "air strike",
+  "missile strike", "missiles launched", "missile attack",
+  "troops deployed", "military action",
+  "declaration of war", "declares war", "declared war",
+  "drone strike", "artillery barrage",
   // Nuclear/WMD
-  "nuclear", "wmd", "chemical weapon", "biological weapon",
-  // Major Political
-  "assassination", "coup", "overthrow", "resign", "impeach",
-  "declare war", "sanctions", "embargo",
-  // Economic Crisis
-  "crash", "collapse", "default", "bank run", "recession",
-  // Terror
-  "terrorist", "terror attack", "hostage",
+  "nuclear strike", "nuclear war", "nuclear attack",
+  "warhead", "icbm",
+  // Political crisis
+  "coup", "martial law", "regime change",
+  "civil war", "state of emergency",
+  // Economic crisis (specific)
+  "sovereign default", "market crash", "bank collapse",
+  "bank run", "bailout", "emergency rate",
+  // Geopolitical
+  "sanctions imposed", "blockade",
+  "ceasefire", "annexed", "annexation",
+  // Breaking news (only all-caps)
+  "BREAKING:",
 ];
 
 // Check if headline is high impact
 function isHighImpact(title: string): boolean {
+  // Check for case-sensitive keywords first (like "BREAKING:")
+  if (title.includes("BREAKING:")) return true;
+
   const lowerTitle = title.toLowerCase();
-  return HIGH_IMPACT_KEYWORDS.some(keyword => lowerTitle.includes(keyword));
+  return HIGH_IMPACT_KEYWORDS.some(keyword => {
+    // Skip the case-sensitive ones we already checked
+    if (keyword === "BREAKING:") return false;
+    return lowerTitle.includes(keyword.toLowerCase());
+  });
 }
 
 interface NewsPanelProps {
@@ -190,7 +211,8 @@ interface NewsFeedGridProps {
 }
 
 export function NewsFeedGrid({ news, loading }: NewsFeedGridProps) {
-  const categories: NewsCategory[] = ["world", "tech", "financial", "government"];
+  // Order: World, Government, Financial, Tech
+  const categories: NewsCategory[] = ["world", "government", "financial", "tech"];
 
   return (
     <div className="news-grid">
