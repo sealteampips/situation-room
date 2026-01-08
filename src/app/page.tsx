@@ -147,7 +147,7 @@ export default function Dashboard() {
               <span>SYSTEM OPERATIONAL</span>
             </div>
             <div className="text-center sm:text-right">
-              <div>SITUATION MONITOR v1.1.0</div>
+              <div>SITUATION ROOM v1.1.0</div>
               <div className="text-gray-500">
                 Data refreshes every 5 minutes | For informational purposes only
               </div>

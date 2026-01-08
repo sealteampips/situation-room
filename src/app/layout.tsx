@@ -15,13 +15,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SITUATION MONITOR",
+  title: "SITUATION ROOM",
   description: "Personal geopolitical and financial news aggregation dashboard",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "SITMON",
+    title: "SITROOM",
   },
   icons: {
     icon: "/favicon.ico",

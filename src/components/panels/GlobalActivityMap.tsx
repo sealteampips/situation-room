@@ -67,18 +67,29 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
 
   return (
     <div className="relative">
-      {/* Map Header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <h2 className="text-sm font-bold tracking-widest text-amber-500 font-mono uppercase">
-              GLOBAL ACTIVITY MONITOR
-            </h2>
-          </div>
-          <div className="h-px flex-1 bg-gradient-to-r from-amber-500/30 to-transparent" />
+      {/* Map Header with Threat Legend */}
+      <div className="flex items-center justify-between mb-3 gap-4">
+        {/* Left: Title */}
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <h2 className="text-sm font-bold tracking-widest text-amber-500 font-mono uppercase">
+            GLOBAL ACTIVITY MONITOR
+          </h2>
         </div>
-        <div className="text-[10px] font-mono text-gray-500">
+
+        {/* Center: Threat Legend */}
+        <div className="flex items-center gap-3 px-3 py-1 bg-[#0a0a0a]/80 border border-amber-500/20 rounded">
+          <span className="text-[9px] font-mono text-amber-500/80 uppercase tracking-wider font-semibold">
+            Threat
+          </span>
+          <LegendItem color="#22c55e" label="Low" />
+          <LegendItem color="#f59e0b" label="Elevated" />
+          <LegendItem color="#f97316" label="High" />
+          <LegendItem color="#ef4444" label="Critical" />
+        </div>
+
+        {/* Right: Monitor Count */}
+        <div className="text-[10px] font-mono text-gray-500 shrink-0">
           {hotspotsWithData.length} ACTIVE MONITORS
         </div>
       </div>
@@ -87,26 +98,12 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
       <div className="relative">
         <MapComponent hotspots={hotspotsWithData} />
 
-        {/* Top Bar: Classification + Legend (horizontal) */}
-        <div className="absolute top-3 left-14 right-3 z-[1000] flex items-center justify-between">
-          {/* Classification Badge */}
+        {/* Classification Badge - Top Left */}
+        <div className="absolute top-3 left-14 z-[1000]">
           <div className="bg-[#0a0a0a]/95 border border-amber-500/30 rounded px-3 py-1.5 backdrop-blur-sm">
             <span className="text-[10px] font-mono text-gray-400 tracking-wider">
               CLASSIFICATION: <span className="text-green-500 font-semibold">OSINT</span>
             </span>
-          </div>
-
-          {/* Legend - Horizontal */}
-          <div className="bg-[#0a0a0a]/95 border border-amber-500/30 rounded px-3 py-1.5 backdrop-blur-sm">
-            <div className="flex items-center gap-4">
-              <span className="text-[9px] font-mono text-amber-500/80 uppercase tracking-wider font-semibold">
-                Threat
-              </span>
-              <LegendItem color="#22c55e" label="Low" />
-              <LegendItem color="#f59e0b" label="Elevated" />
-              <LegendItem color="#f97316" label="High" />
-              <LegendItem color="#ef4444" label="Critical" />
-            </div>
           </div>
         </div>
 

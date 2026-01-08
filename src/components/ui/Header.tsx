@@ -48,7 +48,7 @@ export function Header({ onRefresh, lastUpdated, isRefreshing = false }: HeaderP
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <h1 className="text-lg md:text-xl font-bold tracking-widest text-amber-500 font-mono">
-                SITUATION MONITOR
+                SITUATION ROOM
               </h1>
             </div>
             <span className="hidden sm:block text-xs text-gray-600 font-mono">
