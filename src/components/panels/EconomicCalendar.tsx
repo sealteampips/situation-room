@@ -16,8 +16,50 @@ const currencyToFlag: Record<string, string> = {
   NZD: "🇳🇿",
 };
 
+// Major currencies to show by default
+const MAJOR_CURRENCIES = ["USD", "EUR", "GBP", "JPY"];
+
+// Hardcoded high-impact event patterns for reliable detection
+const HIGH_IMPACT_EVENTS = [
+  "nonfarm payrolls",
+  "non-farm employment change",
+  "nfp",
+  "cpi m/m",
+  "cpi y/y",
+  "core cpi",
+  "consumer price index",
+  "interest rate decision",
+  "fed funds rate",
+  "fomc",
+  "fomc minutes",
+  "fed chair powell",
+  "ecb interest rate",
+  "ecb monetary policy",
+  "boe interest rate",
+  "bank of england",
+  "gdp q/q",
+  "gdp y/y",
+  "advance gdp",
+  "preliminary gdp",
+  "retail sales m/m",
+  "core retail sales",
+  "ism manufacturing pmi",
+  "ism non-manufacturing pmi",
+  "ism services pmi",
+  "unemployment rate",
+  "unemployment claims",
+  "initial jobless claims",
+  "ppi m/m",
+  "ppi y/y",
+  "core ppi",
+  "pce price index",
+  "core pce",
+];
+
+// Key events that deserve special highlighting
 const KEY_EVENT_PATTERNS = [
   "nonfarm payrolls",
+  "non-farm employment",
   "nfp",
   "cpi",
   "consumer price index",
@@ -25,30 +67,28 @@ const KEY_EVENT_PATTERNS = [
   "fed funds",
   "fomc",
   "ecb",
-  "european central bank",
   "boe",
-  "bank of england",
   "gdp",
   "retail sales",
   "pmi",
+  "pce",
 ];
+
+function isHighImpact(eventName: string): boolean {
+  const lower = eventName.toLowerCase();
+  return HIGH_IMPACT_EVENTS.some((pattern) => lower.includes(pattern));
+}
 
 function isKeyEvent(eventName: string): boolean {
   const lower = eventName.toLowerCase();
   return KEY_EVENT_PATTERNS.some((pattern) => lower.includes(pattern));
 }
 
-function getImpactDot(impact: string): { color: string; bgColor: string } {
-  switch (impact?.toLowerCase()) {
-    case "high":
-      return { color: "bg-red-500", bgColor: "bg-red-500/5" };
-    case "medium":
-      return { color: "bg-orange-500", bgColor: "bg-transparent" };
-    case "low":
-      return { color: "bg-yellow-500", bgColor: "bg-transparent" };
-    default:
-      return { color: "bg-gray-500", bgColor: "bg-transparent" };
+function getImpactDot(isHigh: boolean): { color: string; bgColor: string } {
+  if (isHigh) {
+    return { color: "bg-red-500", bgColor: "bg-red-500/5" };
   }
+  return { color: "bg-yellow-500", bgColor: "bg-transparent" };
 }
 
 function formatEventTime(timeStr: string): { date: string; time: string } {
@@ -67,13 +107,20 @@ function formatEventTime(timeStr: string): { date: string; time: string } {
   return { date: dateFormatted, time: timeFormatted };
 }
 
+function isFutureEvent(timeStr: string): boolean {
+  const eventTime = new Date(timeStr).getTime();
+  const now = Date.now();
+  return eventTime > now;
+}
+
 function getCountdown(timeStr: string): string | null {
   const eventTime = new Date(timeStr).getTime();
   const now = Date.now();
   const diff = eventTime - now;
 
-  if (diff < 0) return null; // Event has passed
-  if (diff > 24 * 60 * 60 * 1000) return null; // More than 24 hours away
+  // Only show countdown for future events within 24 hours
+  if (diff <= 0) return null;
+  if (diff > 24 * 60 * 60 * 1000) return null;
 
   const hours = Math.floor(diff / (60 * 60 * 1000));
   const minutes = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
@@ -151,10 +198,22 @@ export default function EconomicCalendar() {
     };
   }, [fetchEvents]);
 
+  // Filter events:
+  // 1. Only future events
+  // 2. Only major currencies by default
+  // 3. High impact filter if selected
   const filteredEvents = events.filter((event) => {
+    // Must be a future event
+    if (!isFutureEvent(event.time)) return false;
+
+    // Only major currencies
+    if (!MAJOR_CURRENCIES.includes(event.currency)) return false;
+
+    // Impact filter
     if (impactFilter === "high") {
-      return event.impact?.toLowerCase() === "high";
+      return isHighImpact(event.event);
     }
+
     return true;
   });
 
@@ -168,10 +227,10 @@ export default function EconomicCalendar() {
               ECONOMIC CALENDAR
             </h3>
             <p className="text-xs text-gray-500 font-mono mt-0.5">
-              High-impact events
+              USD/EUR/GBP/JPY
               {cacheAge > 0 && (
                 <span className="ml-2 text-gray-600">
-                  (updated {cacheAge}m ago)
+                  ({cacheAge}m ago)
                 </span>
               )}
             </p>
@@ -224,7 +283,7 @@ export default function EconomicCalendar() {
             <p className="text-gray-500 font-mono text-sm">
               {impactFilter === "high"
                 ? "No high-impact events scheduled"
-                : "No major events scheduled"}
+                : "No upcoming events"}
             </p>
           </div>
         ) : (
@@ -232,7 +291,8 @@ export default function EconomicCalendar() {
             {filteredEvents.map((event, idx) => {
               const { date, time } = formatEventTime(event.time);
               const countdown = getCountdown(event.time);
-              const impact = getImpactDot(event.impact);
+              const highImpact = isHighImpact(event.event);
+              const impact = getImpactDot(highImpact);
               const isKey = isKeyEvent(event.event);
 
               return (
