@@ -3,16 +3,17 @@
 import { useEffect, useState, useCallback } from "react";
 import type { EconomicEvent } from "@/app/api/calendar/route";
 
-const countryFlags: Record<string, string> = {
-  US: "🇺🇸",
-  EU: "🇪🇺",
-  GB: "🇬🇧",
-  JP: "🇯🇵",
-  CN: "🇨🇳",
-  AU: "🇦🇺",
-  CA: "🇨🇦",
-  CH: "🇨🇭",
-  NZ: "🇳🇿",
+// Map currency codes to country flags
+const currencyToFlag: Record<string, string> = {
+  USD: "🇺🇸",
+  EUR: "🇪🇺",
+  GBP: "🇬🇧",
+  JPY: "🇯🇵",
+  CNY: "🇨🇳",
+  AUD: "🇦🇺",
+  CAD: "🇨🇦",
+  CHF: "🇨🇭",
+  NZD: "🇳🇿",
 };
 
 const KEY_EVENT_PATTERNS = [
@@ -83,23 +84,6 @@ function getCountdown(timeStr: string): string | null {
   return `in ${minutes}m`;
 }
 
-function formatValue(value: number | null, unit: string): string {
-  if (value === null) return "—";
-  if (unit === "%" || unit === "percent") {
-    return `${value}%`;
-  }
-  if (unit === "K" || unit === "k") {
-    return `${value}K`;
-  }
-  if (unit === "M" || unit === "m") {
-    return `${value}M`;
-  }
-  if (unit === "B" || unit === "b") {
-    return `${value}B`;
-  }
-  return `${value}${unit ? ` ${unit}` : ""}`;
-}
-
 // Skeleton loader
 function CalendarSkeleton() {
   return (
@@ -118,22 +102,33 @@ function CalendarSkeleton() {
 
 type ImpactFilter = "all" | "high";
 
+interface CalendarResponse {
+  events: EconomicEvent[];
+  cached?: boolean;
+  cacheAge?: number;
+  error?: string;
+}
+
 export default function EconomicCalendar() {
   const [events, setEvents] = useState<EconomicEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [impactFilter, setImpactFilter] = useState<ImpactFilter>("high");
+  const [cacheAge, setCacheAge] = useState<number>(0);
   const [, setTick] = useState(0);
 
   const fetchEvents = useCallback(async () => {
     try {
       setError(null);
       const response = await fetch("/api/calendar");
-      if (!response.ok) {
-        throw new Error("Failed to fetch");
+      const data: CalendarResponse = await response.json();
+
+      if (data.error && (!data.events || data.events.length === 0)) {
+        setError(data.error);
+      } else {
+        setEvents(data.events || []);
+        setCacheAge(data.cacheAge || 0);
       }
-      const data = await response.json();
-      setEvents(data.events || []);
     } catch {
       setError("Unable to load calendar");
     } finally {
@@ -144,8 +139,8 @@ export default function EconomicCalendar() {
   useEffect(() => {
     fetchEvents();
 
-    // Refresh every 30 minutes
-    const refreshInterval = setInterval(fetchEvents, 30 * 60 * 1000);
+    // Refresh every 5 minutes (matching API rate limit)
+    const refreshInterval = setInterval(fetchEvents, 5 * 60 * 1000);
 
     // Update countdown every minute
     const tickInterval = setInterval(() => setTick((t) => t + 1), 60 * 1000);
@@ -174,6 +169,11 @@ export default function EconomicCalendar() {
             </h3>
             <p className="text-xs text-gray-500 font-mono mt-0.5">
               High-impact events
+              {cacheAge > 0 && (
+                <span className="ml-2 text-gray-600">
+                  (updated {cacheAge}m ago)
+                </span>
+              )}
             </p>
           </div>
           {/* Filter toggle */}
@@ -255,9 +255,9 @@ export default function EconomicCalendar() {
                     )}
                   </div>
 
-                  {/* Flag */}
+                  {/* Flag (from currency) */}
                   <div className="flex-shrink-0 text-sm">
-                    {countryFlags[event.country] || "🌐"}
+                    {currencyToFlag[event.currency] || "🌐"}
                   </div>
 
                   {/* Impact dot */}
@@ -281,31 +281,22 @@ export default function EconomicCalendar() {
                         </span>
                       )}
                     </div>
-                    {/* Forecast / Previous */}
-                    {(event.estimate !== null || event.prev !== null) && (
+                    {/* Forecast / Previous / Actual */}
+                    {(event.forecast || event.previous || event.actual) && (
                       <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono">
-                        {event.estimate !== null && (
+                        {event.forecast && (
                           <span className="text-gray-500">
-                            F:{" "}
-                            <span className="text-gray-400">
-                              {formatValue(event.estimate, event.unit)}
-                            </span>
+                            F: <span className="text-gray-400">{event.forecast}</span>
                           </span>
                         )}
-                        {event.prev !== null && (
+                        {event.previous && (
                           <span className="text-gray-500">
-                            P:{" "}
-                            <span className="text-gray-400">
-                              {formatValue(event.prev, event.unit)}
-                            </span>
+                            P: <span className="text-gray-400">{event.previous}</span>
                           </span>
                         )}
-                        {event.actual !== null && (
+                        {event.actual && (
                           <span className="text-gray-500">
-                            A:{" "}
-                            <span className="text-green-400">
-                              {formatValue(event.actual, event.unit)}
-                            </span>
+                            A: <span className="text-green-400">{event.actual}</span>
                           </span>
                         )}
                       </div>
