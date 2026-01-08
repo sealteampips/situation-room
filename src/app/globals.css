@@ -319,3 +319,30 @@ body {
     min-height: 280px;
   }
 }
+
+/* Custom marker styles */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
+}
+
+/* Coordinate label styles */
+.coord-label {
+  background: transparent !important;
+  border: none !important;
+}

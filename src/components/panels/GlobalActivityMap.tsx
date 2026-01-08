@@ -39,7 +39,12 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
       }
 
       return {
-        ...hotspot,
+        id: hotspot.id,
+        name: hotspot.name,
+        label: hotspot.label,
+        lat: hotspot.lat,
+        lng: hotspot.lng,
+        situationId: hotspot.situationId,
         status,
         headlines,
       };
@@ -71,8 +76,8 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
           </div>
         </div>
 
-        {/* Legend */}
-        <div className="absolute bottom-3 right-3 z-[1000]">
+        {/* Legend - Top Right */}
+        <div className="absolute top-3 right-3 z-[1000]">
           <div className="bg-[#0d0d0d]/90 border border-[#262626] rounded px-3 py-2">
             <div className="text-[10px] font-mono text-gray-400 mb-2 uppercase tracking-wider">
               Threat Level
