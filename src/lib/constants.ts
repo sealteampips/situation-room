@@ -117,7 +117,7 @@ export const SITUATION_TRACKERS: Omit<SituationStatus, "headlines" | "lastUpdate
   },
 ];
 
-// Map hotspot locations for the world map - expanded to match reference
+// Map hotspot locations for the world map - command center layout
 export const MAP_HOTSPOTS = [
   // North America
   { id: "nuuk", name: "NUUK", label: "Arctic Dispute", lat: 64.18, lng: -51.72, situationId: "greenland" },
@@ -133,18 +133,22 @@ export const MAP_HOTSPOTS = [
   { id: "moscow", name: "MOSCOW", label: "Kremlin Activity", lat: 55.75, lng: 37.62, situationId: null },
   { id: "kyiv", name: "KYIV", label: "Conflict Zone", lat: 50.45, lng: 30.52, situationId: null },
   { id: "bosphorus", name: "BOSPHORUS", label: "Strait Watch", lat: 41.1, lng: 29.0, situationId: null },
-  { id: "altai", name: "ALTAI/FO", label: "Remote Monitor", lat: 50.0, lng: 87.0, situationId: null },
 
-  // Middle East
+  // Middle East - expanded
   { id: "telaviv", name: "TEL AVIV", label: "Mossad/IDF", lat: 32.08, lng: 34.78, situationId: null },
+  { id: "gaza", name: "GAZA", label: "Conflict Zone", lat: 31.35, lng: 34.30, situationId: null },
   { id: "tehran", name: "TEHRAN", label: "IRGC Activity", lat: 35.69, lng: 51.39, situationId: "iran" },
-  { id: "hormuz", name: "HORMUZ", label: "Strait Watch", lat: 26.5, lng: 56.5, situationId: null },
+  { id: "hormuz", name: "HORMUZ", label: "Oil Chokepoint", lat: 26.56, lng: 56.25, situationId: null },
+
+  // Africa
+  { id: "khartoum", name: "KHARTOUM", label: "Civil War", lat: 15.50, lng: 32.53, situationId: null },
 
   // Asia
   { id: "beijing", name: "BEIJING", label: "PLA/MSS Activity", lat: 39.90, lng: 116.41, situationId: null },
   { id: "pyongyang", name: "PYONGYANG", label: "DPRK Watch", lat: 39.04, lng: 125.76, situationId: null },
   { id: "taipei", name: "TAIPEI", label: "Strait Watch", lat: 25.03, lng: 121.57, situationId: "taiwan" },
-  { id: "malacca", name: "MALACCA", label: "Shipping Lane", lat: 2.2, lng: 102.2, situationId: null },
+  { id: "malacca", name: "MALACCA", label: "Shipping Lane", lat: 4.25, lng: 103.43, situationId: null },
+  { id: "southchinasea", name: "SCS", label: "Maritime Dispute", lat: 15.0, lng: 115.0, situationId: null },
 
   // Local
   { id: "minneapolis", name: "MPLS", label: "Minnesota Local", lat: 44.98, lng: -93.27, situationId: "minnesota" },

@@ -10,10 +10,17 @@ import { filterNewsForSituation } from "@/lib/rss";
 const MapComponent = dynamic(() => import("./MapClient"), {
   ssr: false,
   loading: () => (
-    <div className="map-container bg-[#0d0d0d] flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <div className="text-sm text-gray-400 font-mono">LOADING MAP DATA...</div>
+    <div className="map-wrapper">
+      <div className="map-container bg-[#080808] flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative w-16 h-16 mx-auto mb-4">
+            <div className="absolute inset-0 border-2 border-amber-500/30 rounded-full animate-ping" />
+            <div className="absolute inset-2 border-2 border-amber-500/50 rounded-full animate-pulse" />
+            <div className="absolute inset-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+          <div className="text-xs text-amber-500/80 font-mono tracking-widest">INITIALIZING GLOBAL MONITOR</div>
+          <div className="text-[10px] text-gray-500 font-mono mt-1">Loading satellite feed...</div>
+        </div>
       </div>
     </div>
   ),
@@ -35,7 +42,7 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
       let headlines: string[] = [];
       if (situation) {
         const relevantNews = filterNewsForSituation(allNews, situation.keywords);
-        headlines = relevantNews.slice(0, 3).map((n) => n.title);
+        headlines = relevantNews.slice(0, 5).map((n) => n.title);
       }
 
       return {
@@ -51,15 +58,28 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
     });
   }, [allNews]);
 
+  // Count active situations by threat level
+  const threatCounts = useMemo(() => {
+    const counts = { low: 0, elevated: 0, high: 0, critical: 0 };
+    hotspotsWithData.forEach(h => counts[h.status]++);
+    return counts;
+  }, [hotspotsWithData]);
+
   return (
     <div className="relative">
       {/* Map Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
-          <h2 className="text-sm font-bold tracking-widest text-amber-500 font-mono uppercase">
-            GLOBAL ACTIVITY MONITOR
-          </h2>
-          <div className="h-px flex-1 bg-gradient-to-r from-[#262626] to-transparent" />
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <h2 className="text-sm font-bold tracking-widest text-amber-500 font-mono uppercase">
+              GLOBAL ACTIVITY MONITOR
+            </h2>
+          </div>
+          <div className="h-px flex-1 bg-gradient-to-r from-amber-500/30 to-transparent" />
+        </div>
+        <div className="text-[10px] font-mono text-gray-500">
+          {hotspotsWithData.length} ACTIVE MONITORS
         </div>
       </div>
 
@@ -67,26 +87,58 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
       <div className="relative">
         <MapComponent hotspots={hotspotsWithData} />
 
-        {/* Classification Badge */}
-        <div className="absolute top-3 left-3 z-[1000]">
-          <div className="bg-[#0d0d0d]/90 border border-[#262626] rounded px-3 py-1.5">
+        {/* Classification Badge - Top Left */}
+        <div className="absolute top-3 left-14 z-[1000]">
+          <div className="bg-[#0a0a0a]/95 border border-amber-500/30 rounded px-3 py-1.5 backdrop-blur-sm">
             <span className="text-[10px] font-mono text-gray-400 tracking-wider">
-              CLASSIFICATION: <span className="text-green-500">OPEN SOURCE</span>
+              CLASSIFICATION: <span className="text-green-500 font-semibold">OSINT</span>
             </span>
           </div>
         </div>
 
         {/* Legend - Top Right */}
         <div className="absolute top-3 right-3 z-[1000]">
-          <div className="bg-[#0d0d0d]/90 border border-[#262626] rounded px-3 py-2">
-            <div className="text-[10px] font-mono text-gray-400 mb-2 uppercase tracking-wider">
+          <div className="bg-[#0a0a0a]/95 border border-amber-500/30 rounded px-3 py-2.5 backdrop-blur-sm">
+            <div className="text-[9px] font-mono text-amber-500/80 mb-2.5 uppercase tracking-[0.2em] font-semibold">
               Threat Level
             </div>
-            <div className="flex flex-col gap-1.5">
-              <LegendItem color="#22c55e" label="Low" />
-              <LegendItem color="#eab308" label="Elevated" />
-              <LegendItem color="#f97316" label="High" />
-              <LegendItem color="#ef4444" label="Critical" />
+            <div className="flex flex-col gap-2">
+              <LegendItem color="#22c55e" label="Low" count={threatCounts.low} speed="3s" />
+              <LegendItem color="#f59e0b" label="Elevated" count={threatCounts.elevated} speed="2s" />
+              <LegendItem color="#f97316" label="High" count={threatCounts.high} speed="1.5s" />
+              <LegendItem color="#ef4444" label="Critical" count={threatCounts.critical} speed="1s" />
+            </div>
+          </div>
+        </div>
+
+        {/* Connection Legend - Bottom Left */}
+        <div className="absolute bottom-3 left-3 z-[1000]">
+          <div className="bg-[#0a0a0a]/95 border border-[#262626] rounded px-2.5 py-2 backdrop-blur-sm">
+            <div className="text-[9px] font-mono text-gray-500 mb-1.5 uppercase tracking-wider">
+              Connections
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-px bg-cyan-500/40" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #06b6d4 0, #06b6d4 4px, transparent 4px, transparent 8px)' }} />
+                <span className="text-[9px] font-mono text-gray-400">Alliance</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-px" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #f59e0b 0, #f59e0b 4px, transparent 4px, transparent 8px)' }} />
+                <span className="text-[9px] font-mono text-gray-400">Tension</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-px" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #ef4444 0, #ef4444 4px, transparent 4px, transparent 8px)' }} />
+                <span className="text-[9px] font-mono text-gray-400">Conflict</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Timestamp - Bottom Right */}
+        <div className="absolute bottom-3 right-3 z-[1000]">
+          <div className="bg-[#0a0a0a]/95 border border-[#262626] rounded px-2.5 py-1.5 backdrop-blur-sm">
+            <div className="text-[9px] font-mono text-gray-500">
+              <span className="text-amber-500/60">◉</span> LIVE FEED
             </div>
           </div>
         </div>
@@ -95,14 +147,43 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
   );
 }
 
-function LegendItem({ color, label }: { color: string; label: string }) {
+interface LegendItemProps {
+  color: string;
+  label: string;
+  count: number;
+  speed: string;
+}
+
+function LegendItem({ color, label, count, speed }: LegendItemProps) {
   return (
-    <div className="flex items-center gap-2">
-      <div
-        className="w-2.5 h-2.5 rounded-full"
-        style={{ backgroundColor: color, boxShadow: `0 0 6px ${color}` }}
-      />
-      <span className="text-[11px] font-mono text-gray-300">{label}</span>
+    <div className="flex items-center gap-2.5">
+      {/* Animated pulse dot */}
+      <div className="relative w-3 h-3">
+        <div
+          className="absolute inset-0 rounded-full opacity-0"
+          style={{
+            backgroundColor: color,
+            animation: `legend-pulse ${speed} ease-out infinite`,
+          }}
+        />
+        <div
+          className="absolute inset-[3px] rounded-full"
+          style={{
+            backgroundColor: color,
+            boxShadow: `0 0 6px ${color}`,
+          }}
+        />
+      </div>
+      <span className="text-[11px] font-mono text-gray-300 w-14">{label}</span>
+      <span
+        className="text-[10px] font-mono px-1.5 py-0.5 rounded"
+        style={{
+          backgroundColor: count > 0 ? `${color}20` : 'transparent',
+          color: count > 0 ? color : '#4b5563',
+        }}
+      >
+        {count}
+      </span>
     </div>
   );
 }
@@ -112,14 +193,24 @@ export function GlobalActivityMapStatic() {
   return (
     <div className="relative">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-bold tracking-widest text-amber-500 font-mono uppercase">
-          GLOBAL ACTIVITY MONITOR
-        </h2>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-amber-500/50 animate-pulse" />
+          <h2 className="text-sm font-bold tracking-widest text-amber-500 font-mono uppercase">
+            GLOBAL ACTIVITY MONITOR
+          </h2>
+        </div>
       </div>
-      <div className="map-container bg-[#0d0d0d] flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-3 opacity-30">🌍</div>
-          <div className="text-sm text-gray-400 font-mono">INITIALIZING...</div>
+      <div className="map-wrapper">
+        <div className="map-container bg-[#080808] flex items-center justify-center">
+          <div className="text-center">
+            <div className="relative w-16 h-16 mx-auto mb-4">
+              <div className="absolute inset-0 border-2 border-amber-500/30 rounded-full animate-ping" />
+              <div className="absolute inset-2 border-2 border-amber-500/50 rounded-full animate-pulse" />
+              <div className="absolute inset-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+            <div className="text-xs text-amber-500/80 font-mono tracking-widest">INITIALIZING</div>
+            <div className="text-[10px] text-gray-500 font-mono mt-1">Establishing secure connection...</div>
+          </div>
         </div>
       </div>
     </div>
