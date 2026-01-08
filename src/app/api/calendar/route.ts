@@ -47,19 +47,35 @@ function normalizeEvent(event: JBlankedEvent): EconomicEvent {
   };
 }
 
+// Get date range for current and next month (to cover calendar navigation)
+function getDateRange(): { from: string; to: string } {
+  const now = new Date();
+  // Start from first day of current month
+  const from = new Date(now.getFullYear(), now.getMonth(), 1);
+  // End at last day of next month (to allow month navigation)
+  const to = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+
+  return {
+    from: from.toISOString().split("T")[0],
+    to: to.toISOString().split("T")[0],
+  };
+}
+
 export async function GET() {
   const apiKey = process.env.JBLANKED_API_KEY;
 
   if (!apiKey || apiKey === "placeholder") {
+    console.log("JBlanked API key not configured");
     return NextResponse.json(
       { error: "API key not configured", events: [] },
-      { status: 200 } // Return 200 with empty events so UI can show message
+      { status: 200 }
     );
   }
 
   // Check cache (important: rate limit is 1 req per 5 minutes on free tier)
   if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
     const cacheAge = Math.floor((Date.now() - cachedData.timestamp) / 1000 / 60);
+    console.log(`Returning cached calendar data (${cacheAge}m old, ${cachedData.events.length} events)`);
     return NextResponse.json({
       events: cachedData.events,
       cached: true,
@@ -68,29 +84,41 @@ export async function GET() {
   }
 
   try {
-    const url = "https://www.jblanked.com/news/api/mql5/calendar/week/";
+    // Fetch full month range instead of just one week
+    const { from, to } = getDateRange();
+    const url = `https://www.jblanked.com/news/api/mql5/calendar/range/?from=${from}&to=${to}`;
+
+    console.log(`Fetching calendar: ${url}`);
 
     const response = await fetch(url, {
       headers: {
         "Authorization": `Api-Key ${apiKey}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 300 }, // Cache for 5 minutes
+      next: { revalidate: 300 },
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error("JBlanked API error:", response.status, errorText);
-      throw new Error(`JBlanked API error: ${response.status}`);
+      throw new Error(`JBlanked API error: ${response.status} - ${errorText}`);
     }
 
     const data: JBlankedEvent[] = await response.json();
+    console.log(`JBlanked API returned ${data?.length || 0} raw events`);
+
+    // Log a sample event to see the date format
+    if (data && data.length > 0) {
+      console.log("Sample event:", JSON.stringify(data[0]));
+    }
 
     // Filter to relevant currencies and normalize
     const filteredEvents = (data || [])
       .filter((event) => RELEVANT_CURRENCIES.includes(event.Currency))
       .map(normalizeEvent)
       .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+
+    console.log(`After filtering: ${filteredEvents.length} events`);
 
     // Update cache
     cachedData = {
@@ -119,7 +147,7 @@ export async function GET() {
 
     return NextResponse.json(
       { error: "Failed to fetch economic calendar", events: [] },
-      { status: 200 } // Return 200 so UI can handle gracefully
+      { status: 200 }
     );
   }
 }

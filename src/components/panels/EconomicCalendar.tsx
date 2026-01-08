@@ -272,12 +272,20 @@ export default function EconomicCalendar() {
       const response = await fetch("/api/calendar");
       const data: CalendarResponse = await response.json();
 
+      console.log("Calendar API response:", {
+        eventCount: data.events?.length || 0,
+        cached: data.cached,
+        error: data.error,
+        sampleEvent: data.events?.[0],
+      });
+
       if (data.error && (!data.events || data.events.length === 0)) {
         setError(data.error);
       } else {
         setEvents(data.events || []);
       }
-    } catch {
+    } catch (err) {
+      console.error("Calendar fetch error:", err);
       setError("Unable to load calendar");
     } finally {
       setLoading(false);
@@ -307,7 +315,8 @@ export default function EconomicCalendar() {
       const impact = getImpactLevel(event.event);
       if (!impactFilters.has(impact)) return;
 
-      const dateKey = event.time.split(" ")[0]; // "2026-01-08"
+      // Handle both "2026-01-08 13:30:00" and "2026-01-08T13:30:00" formats
+      const dateKey = event.time.split(/[T ]/)[0]; // "2026-01-08"
       if (!grouped[dateKey]) {
         grouped[dateKey] = [];
       }
