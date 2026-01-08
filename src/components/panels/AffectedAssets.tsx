@@ -48,13 +48,13 @@ interface AssetGroupProps {
 function AssetGroup({ trigger, tickers, matchedHeadline }: AssetGroupProps) {
   return (
     <div className="border-b border-[#1a1a1a] pb-3 last:border-0 last:pb-0">
-      <div className="text-xs text-amber-600 font-mono mb-1 uppercase">
+      <div className="text-[13px] text-amber-600 font-mono mb-1 uppercase font-semibold">
         {trigger}
       </div>
-      <div className="text-xs text-gray-400 mb-2 line-clamp-1">
+      <div className="text-sm text-gray-400 mb-2.5 line-clamp-1 leading-relaxed">
         {matchedHeadline}
       </div>
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-1.5">
         {tickers.map((ticker) => (
           <TickerChip key={ticker} symbol={ticker} />
         ))}

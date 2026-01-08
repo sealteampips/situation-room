@@ -111,29 +111,6 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
           </div>
         </div>
 
-        {/* Connection Legend - Bottom Left */}
-        <div className="absolute bottom-3 left-3 z-[1000]">
-          <div className="bg-[#0a0a0a]/95 border border-[#262626] rounded px-2.5 py-2 backdrop-blur-sm">
-            <div className="text-[9px] font-mono text-gray-500 mb-1.5 uppercase tracking-wider">
-              Connections
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-px bg-cyan-500/40" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #06b6d4 0, #06b6d4 4px, transparent 4px, transparent 8px)' }} />
-                <span className="text-[9px] font-mono text-gray-400">Alliance</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-px" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #f59e0b 0, #f59e0b 4px, transparent 4px, transparent 8px)' }} />
-                <span className="text-[9px] font-mono text-gray-400">Tension</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-px" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #ef4444 0, #ef4444 4px, transparent 4px, transparent 8px)' }} />
-                <span className="text-[9px] font-mono text-gray-400">Conflict</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Timestamp - Bottom Right */}
         <div className="absolute bottom-3 right-3 z-[1000]">
           <div className="bg-[#0a0a0a]/95 border border-[#262626] rounded px-2.5 py-1.5 backdrop-blur-sm">

@@ -95,13 +95,15 @@ export const SITUATION_TRACKERS: Omit<SituationStatus, "headlines" | "lastUpdate
     id: "taiwan",
     name: "Taiwan Strait",
     status: "elevated",
-    keywords: ["taiwan", "taipei", "taiwan strait", "tsmc", "taiwanese", "cross-strait", "pla taiwan", "chinese military taiwan"],
+    // Expanded keywords - single words for better matching
+    keywords: ["taiwan", "taipei", "tsmc", "taiwanese", "formosa", "dpp", "kmt", "lai ching"],
   },
   {
     id: "iran",
     name: "Iran",
     status: "high",
-    keywords: ["iran", "tehran", "iranian", "irgc", "khamenei", "raisi", "persian gulf", "strait of hormuz", "sanctions iran", "nuclear iran", "iranian proxy", "quds force"],
+    // Expanded keywords - single words for better matching
+    keywords: ["iran", "iranian", "tehran", "irgc", "khamenei", "hormuz", "hezbollah", "houthi", "persian gulf", "pezeshkian"],
   },
   {
     id: "us-domestic",

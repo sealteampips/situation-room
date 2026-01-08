@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { MapContainer, TileLayer, Popup, useMap, Marker, Polyline } from "react-leaflet";
+import { MapContainer, TileLayer, Popup, useMap, Marker } from "react-leaflet";
 import L from "leaflet";
 import type { ThreatLevel } from "@/types";
 import "leaflet/dist/leaflet.css";
@@ -36,15 +36,13 @@ const PULSE_SPEEDS: Record<ThreatLevel, string> = {
   critical: "1s",
 };
 
-// Connection lines between related hotspots
-const CONNECTIONS: Array<{ from: string; to: string; type: 'alliance' | 'conflict' | 'tension' }> = [
-  { from: "dc", to: "brussels", type: "alliance" },
-  { from: "dc", to: "telaviv", type: "alliance" },
-  { from: "moscow", to: "kyiv", type: "conflict" },
-  { from: "beijing", to: "taipei", type: "tension" },
-  { from: "tehran", to: "hormuz", type: "tension" },
-  { from: "tehran", to: "telaviv", type: "conflict" },
-];
+// Conflict zone labels for specific hotspots
+const CONFLICT_LABELS: Record<string, { text: string; color: string }> = {
+  kyiv: { text: "UKRAINE CONFLICT", color: "#ef4444" },
+  gaza: { text: "GAZA CONFLICT", color: "#ef4444" },
+  taipei: { text: "TAIWAN STRAIT", color: "#f59e0b" },
+  khartoum: { text: "SUDAN CIVIL WAR", color: "#f97316" },
+};
 
 function MapController() {
   const map = useMap();
@@ -60,21 +58,31 @@ function MapController() {
   return null;
 }
 
-// Create pulsing marker with glow effect
-function createPulsingIcon(name: string, color: string, status: ThreatLevel) {
+// Create pulsing marker with glow effect and optional conflict label
+function createPulsingIcon(id: string, name: string, color: string, status: ThreatLevel) {
   const isCritical = status === "critical";
   const isHigh = status === "high" || status === "critical";
   const pulseSpeed = PULSE_SPEEDS[status];
+  const conflictLabel = CONFLICT_LABELS[id];
 
   // Double ring for critical status
   const criticalRing = isCritical
     ? `<div class="marker-pulse-ring" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;border:1px solid ${color};opacity:0;animation:pulse-ring ${pulseSpeed} ease-out infinite 0.5s;"></div>`
     : '';
 
+  // Conflict zone label box
+  const conflictLabelHtml = conflictLabel
+    ? `<div style="position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:4px;padding:2px 6px;background:${conflictLabel.color}20;border:1px solid ${conflictLabel.color}60;border-radius:2px;white-space:nowrap;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:${conflictLabel.color};letter-spacing:0.5px;">${conflictLabel.text}</span>
+      </div>`
+    : '';
+
   return L.divIcon({
     className: 'custom-marker-container',
     html: `
       <div class="hotspot-marker" data-status="${status}">
+        ${conflictLabelHtml}
+
         <!-- Outer pulse rings -->
         <div class="marker-pulse-ring" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;border:2px solid ${color};opacity:0;animation:pulse-ring ${pulseSpeed} ease-out infinite;"></div>
         ${criticalRing}
@@ -89,25 +97,17 @@ function createPulsingIcon(name: string, color: string, status: ThreatLevel) {
         <div class="marker-label" style="position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#e5e5e5;text-shadow:0 0 4px #000,0 0 8px #000,0 2px 4px rgba(0,0,0,0.8);white-space:nowrap;letter-spacing:1px;text-transform:uppercase;">${name}</div>
       </div>
     `,
-    iconSize: [80, 50],
-    iconAnchor: [40, 20],
+    iconSize: [80, 70],
+    iconAnchor: [40, 30],
   });
 }
 
 export default function MapClient({ hotspots }: MapClientProps) {
-  // Build connection lines data
-  const connectionLines = CONNECTIONS.map(conn => {
-    const fromHotspot = hotspots.find(h => h.id === conn.from);
-    const toHotspot = hotspots.find(h => h.id === conn.to);
-    if (!fromHotspot || !toHotspot) return null;
-    return {
-      positions: [[fromHotspot.lat, fromHotspot.lng], [toHotspot.lat, toHotspot.lng]] as [number, number][],
-      type: conn.type,
-    };
-  }).filter(Boolean);
-
   return (
     <div className="map-wrapper">
+      {/* Night vision tint overlay */}
+      <div className="map-night-vision" />
+
       {/* Scanline overlay */}
       <div className="map-scanlines" />
 
@@ -130,27 +130,13 @@ export default function MapClient({ hotspots }: MapClientProps) {
         >
           <MapController />
 
-          {/* Dark tile layer */}
+          {/* Dark tile layer without labels for cleaner look */}
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
             attribution=""
             noWrap={true}
             bounds={[[-90, -180], [90, 180]]}
           />
-
-          {/* Connection lines */}
-          {connectionLines.map((line, idx) => line && (
-            <Polyline
-              key={idx}
-              positions={line.positions}
-              pathOptions={{
-                color: line.type === 'conflict' ? '#ef4444' : line.type === 'tension' ? '#f59e0b' : '#06b6d4',
-                weight: 1,
-                opacity: 0.25,
-                dashArray: '8, 8',
-              }}
-            />
-          ))}
 
           {/* Grid overlay */}
           <GridOverlay />
@@ -183,7 +169,7 @@ function GridOverlay() {
     latLabels.forEach(lat => {
       const icon = L.divIcon({
         className: 'coord-label',
-        html: `<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#3a3a3a;text-shadow:0 0 2px #000;">${Math.abs(lat)}°${lat >= 0 ? 'N' : 'S'}</span>`,
+        html: `<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#2a4a3a;text-shadow:0 0 2px #000;">${Math.abs(lat)}°${lat >= 0 ? 'N' : 'S'}</span>`,
         iconSize: [35, 14],
         iconAnchor: [17, 7],
       });
@@ -195,7 +181,7 @@ function GridOverlay() {
     lngLabels.forEach(lng => {
       const icon = L.divIcon({
         className: 'coord-label',
-        html: `<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#3a3a3a;text-shadow:0 0 2px #000;">${Math.abs(lng)}°${lng >= 0 ? 'E' : 'W'}</span>`,
+        html: `<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#2a4a3a;text-shadow:0 0 2px #000;">${Math.abs(lng)}°${lng >= 0 ? 'E' : 'W'}</span>`,
         iconSize: [35, 14],
         iconAnchor: [17, 7],
       });
@@ -213,7 +199,7 @@ function GridOverlay() {
 
 function HotspotMarker({ hotspot }: { hotspot: HotspotData }) {
   const color = STATUS_COLORS[hotspot.status];
-  const icon = createPulsingIcon(hotspot.name, color, hotspot.status);
+  const icon = createPulsingIcon(hotspot.id, hotspot.name, color, hotspot.status);
 
   return (
     <Marker

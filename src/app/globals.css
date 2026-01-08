@@ -253,6 +253,24 @@ body {
   background: #0a0a0a;
 }
 
+/* Night vision green tint overlay */
+.map-night-vision {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 40, 30, 0.15) 0%,
+    rgba(0, 60, 40, 0.1) 50%,
+    rgba(0, 40, 30, 0.15) 100%
+  );
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 999;
+}
+
 /* Map scanline overlay */
 .map-scanlines {
   position: absolute;

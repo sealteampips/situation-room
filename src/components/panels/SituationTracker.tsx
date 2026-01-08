@@ -21,11 +21,11 @@ export function SituationTrackerPanel({ situation, allNews }: SituationTrackerPa
       headerRight={<StatusBadge status={situation.status} />}
       compact
     >
-      <div className="space-y-2">
+      <div className="space-y-3">
         {/* Headlines */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {relevantNews.length === 0 ? (
-            <div className="text-gray-500 text-xs font-mono py-2">
+            <div className="text-gray-500 text-sm font-mono py-2">
               No recent headlines
             </div>
           ) : (
@@ -35,7 +35,7 @@ export function SituationTrackerPanel({ situation, allNews }: SituationTrackerPa
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-xs text-gray-300 hover:text-amber-400 transition-colors line-clamp-2"
+                className="block text-sm text-gray-300 hover:text-amber-400 transition-colors line-clamp-2 leading-relaxed"
               >
                 {item.title}
               </a>
@@ -46,7 +46,7 @@ export function SituationTrackerPanel({ situation, allNews }: SituationTrackerPa
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t border-[#1a1a1a]">
           <StatusIndicator status={situation.status} size="sm" />
-          <span className="text-xs text-gray-500 font-mono">
+          <span className="text-[13px] text-gray-500 font-mono">
             {formatTimestamp(lastUpdated)}
           </span>
         </div>
@@ -159,12 +159,12 @@ export function SituationTrackerStatic() {
           headerRight={<StatusBadge status={situation.status} />}
           compact
         >
-          <div className="space-y-2">
-            <div className="space-y-1.5">
+          <div className="space-y-3">
+            <div className="space-y-2">
               {situation.headlines.map((headline, idx) => (
                 <div
                   key={idx}
-                  className="text-xs text-gray-300 line-clamp-2"
+                  className="text-sm text-gray-300 line-clamp-2 leading-relaxed"
                 >
                   {headline}
                 </div>
@@ -172,7 +172,7 @@ export function SituationTrackerStatic() {
             </div>
             <div className="flex items-center justify-between pt-2 border-t border-[#1a1a1a]">
               <StatusIndicator status={situation.status} size="sm" />
-              <span className="text-xs text-gray-500 font-mono">
+              <span className="text-[13px] text-gray-500 font-mono">
                 {formatTimestamp(situation.lastUpdated)}
               </span>
             </div>

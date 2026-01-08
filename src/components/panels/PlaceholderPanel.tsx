@@ -25,11 +25,11 @@ export function PlaceholderPanel({
             <span className="text-2xl opacity-30">?</span>
           </div>
         )}
-        <div className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-1">
+        <div className="text-[13px] text-gray-500 font-mono uppercase tracking-wider mb-1">
           {phase}
         </div>
         {description && (
-          <div className="text-xs text-gray-600 max-w-[200px]">
+          <div className="text-sm text-gray-500 max-w-[220px] leading-relaxed">
             {description}
           </div>
         )}
