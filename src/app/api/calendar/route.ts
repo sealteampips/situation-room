@@ -47,21 +47,21 @@ function normalizeEvent(event: JBlankedEvent): EconomicEvent {
   };
 }
 
-// Get date range for calendar (current month + next month + buffer)
+// Format date as YYYY-MM-DD
+function formatDate(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+// Get date range for calendar (current month through end of next month)
 function getDateRange(): { from: string; to: string } {
   const now = new Date();
   // Start from first day of current month
   const from = new Date(now.getFullYear(), now.getMonth(), 1);
-  // End at 7 days into the month after next (for calendar navigation buffer)
-  const to = new Date(now.getFullYear(), now.getMonth() + 2, 7);
-
-  // Format as YYYY-MM-DD in local timezone
-  const formatDate = (d: Date) => {
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+  // End at last day of next month (JBlanked may have limits on range)
+  const to = new Date(now.getFullYear(), now.getMonth() + 2, 0);
 
   return {
     from: formatDate(from),
@@ -92,11 +92,12 @@ export async function GET() {
   }
 
   try {
-    // Fetch full month range instead of just one week
+    // Fetch full month range
     const { from, to } = getDateRange();
     const url = `https://www.jblanked.com/news/api/mql5/calendar/range/?from=${from}&to=${to}`;
 
-    console.log(`Fetching calendar: ${url}`);
+    console.log(`[Calendar API] Fetching: ${url}`);
+    console.log(`[Calendar API] Date range: ${from} to ${to}`);
 
     const response = await fetch(url, {
       headers: {
@@ -106,9 +107,11 @@ export async function GET() {
       next: { revalidate: 300 },
     });
 
+    console.log(`[Calendar API] Response status: ${response.status}`);
+
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("JBlanked API error:", response.status, errorText);
+      console.error(`[Calendar API] Error ${response.status}: ${errorText}`);
       throw new Error(`JBlanked API error: ${response.status} - ${errorText}`);
     }
 
@@ -140,7 +143,7 @@ export async function GET() {
       cacheAge: 0,
     });
   } catch (error) {
-    console.error("Economic calendar fetch error:", error);
+    console.error("[Calendar API] Fetch error:", error instanceof Error ? error.message : error);
 
     // Return cached data if available, even if stale
     if (cachedData) {
