@@ -116,7 +116,13 @@ export async function GET() {
     }
 
     const data: JBlankedEvent[] = await response.json();
-    console.log(`JBlanked API returned ${data?.length || 0} raw events`);
+    console.log(`[Calendar API] JBlanked returned ${data?.length || 0} raw events`);
+
+    // Log date range of returned events
+    if (data && data.length > 0) {
+      const dates = data.map(e => e.Date).sort();
+      console.log(`[Calendar API] Event date range: ${dates[0]} to ${dates[dates.length - 1]}`);
+    }
 
     // Log a sample event to see the date format
     if (data && data.length > 0) {

@@ -3,6 +3,13 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import type { EconomicEvent } from "@/app/api/calendar/route";
 
+// Extend window for debug flag
+declare global {
+  interface Window {
+    _calendarTimeDebugDone?: boolean;
+  }
+}
+
 // Map currency codes to country flags
 const currencyToFlag: Record<string, string> = {
   USD: "🇺🇸",
@@ -136,23 +143,38 @@ function formatDateKey(date: Date): string {
 }
 
 function formatEventTime(timeStr: string): string {
-  // JBlanked API returns times in UTC format (e.g., "2026.01.09 13:30:00")
-  // We need to parse this as UTC and convert to local timezone
+  // JBlanked API returns times in EST/EDT (Eastern Time), not UTC
+  // We need to parse and display in user's local timezone
 
-  // Normalize the date string: convert dots to dashes and ensure proper format
+  // Debug: log raw time for first few events
+  if (typeof window !== "undefined" && !window._calendarTimeDebugDone) {
+    console.log("[Calendar] Raw time string:", timeStr);
+  }
+
+  // Normalize the date string: convert dots to dashes
   const normalized = timeStr
-    .replace(/\./g, "-")  // Convert dots to dashes
-    .replace(" ", "T");   // Convert space to T for ISO format
+    .replace(/\./g, "-")  // Convert dots to dashes: "2026.01.09" -> "2026-01-09"
+    .replace(" ", "T");   // Convert space to T: "2026-01-09 13:30:00" -> "2026-01-09T13:30:00"
 
-  // Append Z to indicate UTC if not already present
-  const utcString = normalized.endsWith("Z") ? normalized : normalized + "Z";
+  // The API returns Eastern Time (EST = UTC-5, EDT = UTC-4)
+  // For January, it's EST (UTC-5)
+  // Append the EST offset instead of Z (UTC)
+  const estString = normalized.includes("+") || normalized.includes("Z")
+    ? normalized
+    : normalized + "-05:00";  // EST offset
 
-  const date = new Date(utcString);
+  const date = new Date(estString);
+
+  // Debug: log parsed date
+  if (typeof window !== "undefined" && !window._calendarTimeDebugDone) {
+    console.log("[Calendar] Parsed as EST:", estString, "-> Local:", date.toLocaleTimeString());
+    window._calendarTimeDebugDone = true;
+  }
 
   // Check if date is valid
   if (isNaN(date.getTime())) {
-    // Fallback: try parsing as-is
-    const fallbackDate = new Date(timeStr);
+    // Fallback: try parsing as-is (browser will use local timezone)
+    const fallbackDate = new Date(timeStr.replace(/\./g, "-"));
     if (!isNaN(fallbackDate.getTime())) {
       return fallbackDate.toLocaleTimeString("en-US", {
         hour: "numeric",
