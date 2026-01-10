@@ -319,8 +319,10 @@ export default function EconomicCalendar() {
       const impact = getImpactLevel(event.event);
       if (!impactFilters.has(impact)) return;
 
-      // Handle both "2026-01-08 13:30:00" and "2026-01-08T13:30:00" formats
-      const dateKey = event.time.split(/[T ]/)[0]; // "2026-01-08"
+      // Handle multiple formats: "2026-01-08 13:30:00", "2026-01-08T13:30:00", "2026.01.08 13:30:00"
+      // Extract date part and normalize to YYYY-MM-DD format (with dashes)
+      const datePart = event.time.split(/[T ]/)[0]; // "2026-01-08" or "2026.01.08"
+      const dateKey = datePart.replace(/\./g, "-"); // Convert dots to dashes: "2026-01-08"
       if (!grouped[dateKey]) {
         grouped[dateKey] = [];
       }
