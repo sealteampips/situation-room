@@ -143,53 +143,49 @@ function formatDateKey(date: Date): string {
 }
 
 function formatEventTime(timeStr: string): string {
-  // JBlanked API returns times in EST/EDT (Eastern Time), not UTC
-  // We need to parse and display in user's local timezone
+  // JBlanked API returns times - we need to determine timezone from the raw data
+  // Format example: "2026.01.09 13:30:00" or "2026-01-09T13:30:00"
 
-  // Debug: log raw time for first few events
+  // Debug: log raw time for first event only
   if (typeof window !== "undefined" && !window._calendarTimeDebugDone) {
-    console.log("[Calendar] Raw time string:", timeStr);
+    console.log("[Calendar] Raw API time:", timeStr);
   }
 
-  // Normalize the date string: convert dots to dashes
+  // Normalize: convert dots to dashes, space to T for ISO format
   const normalized = timeStr
-    .replace(/\./g, "-")  // Convert dots to dashes: "2026.01.09" -> "2026-01-09"
-    .replace(" ", "T");   // Convert space to T: "2026-01-09 13:30:00" -> "2026-01-09T13:30:00"
+    .replace(/\./g, "-")
+    .replace(" ", "T");
 
-  // The API returns Eastern Time (EST = UTC-5, EDT = UTC-4)
-  // For January, it's EST (UTC-5)
-  // Append the EST offset instead of Z (UTC)
-  const estString = normalized.includes("+") || normalized.includes("Z")
-    ? normalized
-    : normalized + "-05:00";  // EST offset
+  // Try parsing WITH UTC indicator first (treat as UTC, convert to local)
+  // This is the most reliable approach - API times should be UTC
+  const utcDate = new Date(normalized + "Z");
 
-  const date = new Date(estString);
-
-  // Debug: log parsed date
   if (typeof window !== "undefined" && !window._calendarTimeDebugDone) {
-    console.log("[Calendar] Parsed as EST:", estString, "-> Local:", date.toLocaleTimeString());
+    console.log("[Calendar] Parsed as UTC:", normalized + "Z");
+    console.log("[Calendar] Converted to local:", utcDate.toLocaleTimeString("en-US"));
+    console.log("[Calendar] User timezone offset:", new Date().getTimezoneOffset() / 60, "hours from UTC");
     window._calendarTimeDebugDone = true;
   }
 
-  // Check if date is valid
-  if (isNaN(date.getTime())) {
-    // Fallback: try parsing as-is (browser will use local timezone)
-    const fallbackDate = new Date(timeStr.replace(/\./g, "-"));
-    if (!isNaN(fallbackDate.getTime())) {
-      return fallbackDate.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      });
-    }
-    return "TBD";
+  if (!isNaN(utcDate.getTime())) {
+    return utcDate.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
   }
 
-  return date.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
+  // Fallback: parse without timezone (browser interprets as local)
+  const localDate = new Date(normalized);
+  if (!isNaN(localDate.getTime())) {
+    return localDate.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
+  return "TBD";
 }
 
 // Get calendar days for a month
