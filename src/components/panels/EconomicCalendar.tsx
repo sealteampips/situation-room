@@ -127,8 +127,12 @@ function isKeyEvent(eventName: string): boolean {
   return KEY_EVENT_PATTERNS.some((pattern) => lower.includes(pattern));
 }
 
+// Format date as YYYY-MM-DD in LOCAL timezone (not UTC)
 function formatDateKey(date: Date): string {
-  return date.toISOString().split("T")[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatEventTime(timeStr: string): string {
@@ -327,6 +331,12 @@ export default function EconomicCalendar() {
     Object.keys(grouped).forEach((key) => {
       grouped[key].sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
     });
+
+    // Debug: log grouped event dates
+    if (Object.keys(grouped).length > 0) {
+      console.log("Events grouped by date:", Object.keys(grouped));
+      console.log("Sample calendar dateKey:", formatDateKey(new Date()));
+    }
 
     return grouped;
   }, [events, selectedCurrencies, impactFilters]);
