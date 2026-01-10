@@ -12,6 +12,8 @@ export const RSS_FEEDS: FeedConfig[] = [
   { name: "Fox News World", url: "https://moxie.foxnews.com/google-publisher/world.xml", category: "world" },
   { name: "CNN World", url: "http://rss.cnn.com/rss/cnn_world.rss", category: "world" },
   { name: "CBS News World", url: "https://www.cbsnews.com/latest/rss/world", category: "world" },
+  { name: "NYT World", url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml", category: "world" },
+  { name: "The Guardian World", url: "https://www.theguardian.com/world/rss", category: "world" },
   // Taiwan/Asia Regional
   { name: "Focus Taiwan", url: "https://focustaiwan.tw/rss", category: "world" },
   { name: "Taipei Times", url: "https://www.taipeitimes.com/xml/index.rss", category: "world" },
@@ -34,6 +36,8 @@ export const RSS_FEEDS: FeedConfig[] = [
   { name: "CNBC", url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114", category: "financial" },
   { name: "Yahoo Finance", url: "https://finance.yahoo.com/news/rssindex", category: "financial" },
   { name: "Reuters Business", url: "https://feeds.reuters.com/reuters/businessNews", category: "financial" },
+  { name: "NYT Business", url: "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml", category: "financial" },
+  { name: "WSJ Markets", url: "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines", category: "financial" },
 
   // Government/Policy - expanded sources
   { name: "Federal Register", url: "https://www.federalregister.gov/documents/current.rss", category: "government" },
@@ -47,6 +51,10 @@ export const RSS_FEEDS: FeedConfig[] = [
   { name: "Fox News Politics", url: "https://moxie.foxnews.com/google-publisher/politics.xml", category: "government" },
   { name: "CNN Politics", url: "http://rss.cnn.com/rss/cnn_allpolitics.rss", category: "government" },
   { name: "Politico", url: "https://www.politico.com/rss/politicopicks.xml", category: "government" },
+  { name: "NYT Politics", url: "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml", category: "government" },
+  { name: "The Hill", url: "https://thehill.com/feed/", category: "government" },
+  { name: "Defense One", url: "https://www.defenseone.com/rss/all/", category: "government" },
+  { name: "Military Times", url: "https://www.militarytimes.com/arc/outboundfeeds/rss/?outputType=xml", category: "government" },
 ];
 
 export const TICKER_MAPPINGS: TickerMapping[] = [

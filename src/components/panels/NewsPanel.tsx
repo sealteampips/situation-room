@@ -10,13 +10,13 @@ type SourceCategory = "wire" | "legacy" | "financial" | "tech" | "government";
 
 // Map source names to categories
 const SOURCE_CATEGORIES: Record<string, SourceCategory> = {
-  // Wire Services (Amber)
+  // Wire Services (Amber) - Reuters, AP, AFP, Al Jazeera
   "Reuters World": "wire",
   "Reuters Business": "wire",
   "AP News": "wire",
   "Al Jazeera": "wire",
 
-  // Legacy Media (Blue)
+  // Legacy Media (Blue) - NYT, Guardian, The Hill, BBC, etc.
   "BBC World": "legacy",
   "BBC Middle East": "legacy",
   "BBC Asia": "legacy",
@@ -30,16 +30,22 @@ const SOURCE_CATEGORIES: Record<string, SourceCategory> = {
   "Star Tribune": "legacy",
   "MPR News": "legacy",
   "WCCO Minnesota": "legacy",
+  "NYT World": "legacy",
+  "NYT Politics": "legacy",
+  "NYT Business": "legacy",
+  "The Guardian World": "legacy",
+  "The Hill": "legacy",
   // Regional/Specialty (Blue)
   "Focus Taiwan": "legacy",
   "Taipei Times": "legacy",
   "SCMP Asia": "legacy",
   "RFE Iran": "legacy",
 
-  // Financial (Green)
+  // Financial (Green) - WSJ, MarketWatch, CNBC
   "MarketWatch": "financial",
   "CNBC": "financial",
   "Yahoo Finance": "financial",
+  "WSJ Markets": "financial",
 
   // Tech (Purple)
   "Ars Technica": "tech",
@@ -47,7 +53,7 @@ const SOURCE_CATEGORIES: Record<string, SourceCategory> = {
   "TechCrunch": "tech",
   "Wired": "tech",
 
-  // Government (Gray)
+  // Government (Gray) - Official gov sources + Defense One, Military Times
   "Federal Register": "government",
   "White House": "government",
   "Congress.gov": "government",
@@ -56,6 +62,8 @@ const SOURCE_CATEGORIES: Record<string, SourceCategory> = {
   "DOJ News": "government",
   "Treasury": "government",
   "GAO Reports": "government",
+  "Defense One": "government",
+  "Military Times": "government",
 };
 
 // Color classes by category
