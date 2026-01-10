@@ -47,17 +47,25 @@ function normalizeEvent(event: JBlankedEvent): EconomicEvent {
   };
 }
 
-// Get date range for current and next month (to cover calendar navigation)
+// Get date range for calendar (current month + next month + buffer)
 function getDateRange(): { from: string; to: string } {
   const now = new Date();
   // Start from first day of current month
   const from = new Date(now.getFullYear(), now.getMonth(), 1);
-  // End at last day of next month (to allow month navigation)
-  const to = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+  // End at 7 days into the month after next (for calendar navigation buffer)
+  const to = new Date(now.getFullYear(), now.getMonth() + 2, 7);
+
+  // Format as YYYY-MM-DD in local timezone
+  const formatDate = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   return {
-    from: from.toISOString().split("T")[0],
-    to: to.toISOString().split("T")[0],
+    from: formatDate(from),
+    to: formatDate(to),
   };
 }
 

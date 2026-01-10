@@ -136,7 +136,33 @@ function formatDateKey(date: Date): string {
 }
 
 function formatEventTime(timeStr: string): string {
-  const date = new Date(timeStr);
+  // JBlanked API returns times in UTC format (e.g., "2026.01.09 13:30:00")
+  // We need to parse this as UTC and convert to local timezone
+
+  // Normalize the date string: convert dots to dashes and ensure proper format
+  const normalized = timeStr
+    .replace(/\./g, "-")  // Convert dots to dashes
+    .replace(" ", "T");   // Convert space to T for ISO format
+
+  // Append Z to indicate UTC if not already present
+  const utcString = normalized.endsWith("Z") ? normalized : normalized + "Z";
+
+  const date = new Date(utcString);
+
+  // Check if date is valid
+  if (isNaN(date.getTime())) {
+    // Fallback: try parsing as-is
+    const fallbackDate = new Date(timeStr);
+    if (!isNaN(fallbackDate.getTime())) {
+      return fallbackDate.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+    }
+    return "TBD";
+  }
+
   return date.toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit",
@@ -238,15 +264,15 @@ function DayEventsModal({ date, events, onClose }: DayEventsModalProps) {
                       )}
                     </div>
                     {(event.forecast || event.previous || event.actual) && (
-                      <div className="flex items-center gap-3 mt-1 ml-[88px] text-[10px] font-mono">
+                      <div className="flex items-center gap-3 mt-1 ml-[88px] text-[10px] font-mono flex-wrap">
                         {event.forecast && (
-                          <span className="text-gray-500">F: <span className="text-gray-400">{event.forecast}</span></span>
+                          <span className="text-gray-500">Forecast: <span className="text-gray-400">{event.forecast}</span></span>
                         )}
                         {event.previous && (
-                          <span className="text-gray-500">P: <span className="text-gray-400">{event.previous}</span></span>
+                          <span className="text-gray-500">Previous: <span className="text-gray-400">{event.previous}</span></span>
                         )}
                         {event.actual && (
-                          <span className="text-gray-500">A: <span className="text-green-400">{event.actual}</span></span>
+                          <span className="text-gray-500">Actual: <span className="text-green-400">{event.actual}</span></span>
                         )}
                       </div>
                     )}
