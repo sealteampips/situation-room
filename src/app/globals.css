@@ -538,3 +538,329 @@ body {
     opacity: 0;
   }
 }
+
+/* ========================================
+   MILITARY BASES CLUSTER STYLES
+   ======================================== */
+
+/* Custom cluster icon container */
+.custom-cluster-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Military cluster marker */
+.military-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: #fff;
+  box-shadow:
+    0 0 10px rgba(59, 130, 246, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(59, 130, 246, 0.6);
+  transition: all 0.2s ease;
+}
+
+.military-cluster:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 15px rgba(59, 130, 246, 0.7),
+    0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.military-cluster span {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Small cluster (< 10 bases) */
+.military-cluster.cluster-small {
+  width: 30px;
+  height: 30px;
+  font-size: 11px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+/* Medium cluster (10-50 bases) */
+.military-cluster.cluster-medium {
+  width: 40px;
+  height: 40px;
+  font-size: 12px;
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+/* Large cluster (> 50 bases) */
+.military-cluster.cluster-large {
+  width: 50px;
+  height: 50px;
+  font-size: 13px;
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+}
+
+/* Military base popup styles */
+.base-popup-content {
+  min-width: 200px;
+  padding: 0;
+}
+
+.base-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #262626;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.base-popup-icon {
+  font-size: 14px;
+}
+
+.base-popup-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #60a5fa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.base-popup-details {
+  padding: 10px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.base-popup-detail {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.base-popup-detail:last-child {
+  margin-bottom: 0;
+}
+
+.base-popup-label {
+  color: #6b7280;
+  min-width: 60px;
+}
+
+.base-popup-value {
+  color: #d1d5db;
+}
+
+/* ========================================
+   FOREIGN MILITARY BASES CLUSTER STYLES
+   ======================================== */
+
+/* Foreign cluster marker - multi-colored gradient */
+.foreign-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: #fff;
+  box-shadow:
+    0 0 10px rgba(156, 163, 175, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(156, 163, 175, 0.5);
+  transition: all 0.2s ease;
+  /* Multi-color gradient representing different nations */
+  background: conic-gradient(
+    from 0deg,
+    #ef4444 0deg,    /* Russia - Red */
+    #ef4444 72deg,
+    #eab308 72deg,   /* China - Yellow */
+    #eab308 144deg,
+    #3b82f6 144deg,  /* UK - Blue */
+    #3b82f6 216deg,
+    #06b6d4 216deg,  /* France - Cyan */
+    #06b6d4 288deg,
+    #f97316 288deg,  /* India - Orange */
+    #f97316 360deg
+  );
+}
+
+.foreign-cluster:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 15px rgba(156, 163, 175, 0.6),
+    0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.foreign-cluster span {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2px 4px;
+  border-radius: 50%;
+}
+
+/* Small cluster (< 15 bases) */
+.foreign-cluster.cluster-small {
+  width: 28px;
+  height: 28px;
+  font-size: 10px;
+}
+
+.foreign-cluster.cluster-small span {
+  padding: 1px 3px;
+}
+
+/* Medium cluster (15-30 bases) */
+.foreign-cluster.cluster-medium {
+  width: 34px;
+  height: 34px;
+  font-size: 11px;
+}
+
+/* Large cluster (> 30 bases) */
+.foreign-cluster.cluster-large {
+  width: 40px;
+  height: 40px;
+  font-size: 12px;
+}
+
+/* ========================================
+   NUCLEAR SITES CLUSTER STYLES
+   ======================================== */
+
+/* Nuclear cluster marker - radiation themed */
+.nuclear-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: #fff;
+  box-shadow:
+    0 0 12px rgba(234, 179, 8, 0.5),
+    0 0 24px rgba(234, 179, 8, 0.25),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(234, 179, 8, 0.7);
+  transition: all 0.2s ease;
+  /* Nuclear yellow/orange gradient */
+  background: radial-gradient(
+    circle at 30% 30%,
+    #fbbf24 0%,
+    #f59e0b 40%,
+    #d97706 80%,
+    #b45309 100%
+  );
+}
+
+.nuclear-cluster:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 18px rgba(234, 179, 8, 0.7),
+    0 0 36px rgba(234, 179, 8, 0.35),
+    0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.nuclear-cluster span {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Small cluster (< 10 sites) */
+.nuclear-cluster.cluster-small {
+  width: 32px;
+  height: 32px;
+  font-size: 10px;
+}
+
+/* Medium cluster (10-20 sites) */
+.nuclear-cluster.cluster-medium {
+  width: 38px;
+  height: 38px;
+  font-size: 11px;
+}
+
+/* Large cluster (> 20 sites) */
+.nuclear-cluster.cluster-large {
+  width: 44px;
+  height: 44px;
+  font-size: 12px;
+}
+
+/* Nuclear site popup styles */
+.nuclear-popup-content {
+  min-width: 220px;
+  padding: 0;
+}
+
+.nuclear-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #262626;
+  background: rgba(234, 179, 8, 0.1);
+}
+
+.nuclear-popup-icon {
+  font-size: 16px;
+}
+
+.nuclear-popup-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fbbf24;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nuclear-popup-details {
+  padding: 10px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.nuclear-popup-detail {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.nuclear-popup-detail:last-child {
+  margin-bottom: 0;
+}
+
+.nuclear-popup-label {
+  color: #6b7280;
+  min-width: 70px;
+}
+
+.nuclear-popup-value {
+  color: #d1d5db;
+}
+
+.nuclear-popup-warheads {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}

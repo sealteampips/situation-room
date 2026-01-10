@@ -99,8 +99,8 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
       <div className="relative">
         <MapComponent hotspots={hotspotsWithData} />
 
-        {/* Classification Badge - Top Left */}
-        <div className="absolute top-3 left-14 z-[1000]">
+        {/* Classification Badge - Top Left (hidden on mobile) */}
+        <div className="hidden md:block absolute top-3 left-14 z-[1000]">
           <div className="bg-[#0a0a0a]/95 border border-amber-500/30 rounded px-3 py-1.5 backdrop-blur-sm">
             <span className="text-[10px] font-mono text-gray-400 tracking-wider">
               CLASSIFICATION: <span className="text-green-500 font-semibold">OSINT</span>
@@ -108,8 +108,8 @@ export function GlobalActivityMap({ allNews }: GlobalActivityMapProps) {
           </div>
         </div>
 
-        {/* Timestamp - Bottom Right */}
-        <div className="absolute bottom-3 right-3 z-[1000]">
+        {/* Timestamp - Bottom Right (hidden on mobile) */}
+        <div className="hidden md:block absolute bottom-3 right-3 z-[1000]">
           <div className="bg-[#0a0a0a]/95 border border-[#262626] rounded px-2.5 py-1.5 backdrop-blur-sm">
             <div className="text-[9px] font-mono text-gray-500">
               <span className="text-amber-500/60">◉</span> LIVE FEED
